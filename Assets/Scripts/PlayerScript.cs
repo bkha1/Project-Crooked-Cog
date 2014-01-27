@@ -21,7 +21,7 @@ public class PlayerScript : MonoBehaviour {
         weapons = GetComponentsInChildren<WeaponScript>();
         animator = GetComponent<Animator>();
 
-        Screen.showCursor = false;
+        //Screen.showCursor = false;
         Screen.lockCursor = true;
     }
 
