@@ -7,6 +7,9 @@ public class WeaponScript : MonoBehaviour {
     public float shootingRate = .25f;
     private float shootCooldown;
 
+    //the weapon id will be used to identify what to activate
+    public int weaponID = 0;
+
     // Use this for initialization
     void Start()
     {
@@ -38,6 +41,9 @@ public class WeaponScript : MonoBehaviour {
             shootCooldown = shootingRate;
             var shotTransform = Instantiate(shotPrefab) as Transform;
             shotTransform.position = transform.position;
+
+            shotTransform.rotation = transform.rotation;
+
             shot = shotTransform.gameObject.GetComponent<ShotScript>();
 
             if (shot != null)
@@ -51,6 +57,44 @@ public class WeaponScript : MonoBehaviour {
             {
                 move.direction = this.transform.right;
             }*/
+        }
+    }
+
+    //used to activate specific weapons
+    public void Attack(bool isEnemy, int ID)
+    {
+        if (weaponID == ID)
+        {
+            Attack(isEnemy);
+        }
+    }//end Attack
+
+    public void Attack(bool isEnemy, int ID, int speed)
+    {
+        if (weaponID == ID)
+        {
+            if (CanAttack)
+            {
+                shootCooldown = shootingRate;
+                var shotTransform = Instantiate(shotPrefab) as Transform;
+                shotTransform.position = transform.position;
+
+                shotTransform.rotation = transform.rotation;
+
+                shot = shotTransform.gameObject.GetComponent<ShotScript>();
+
+                if (shot != null)
+                {
+                    shot.isEnemyShot = isEnemy;
+                }
+
+                MoveScript move = shotTransform.gameObject.GetComponent<MoveScript>();
+
+                if (move != null)
+                {
+                    move.speed = speed;
+                }
+            }
         }
     }
 }
