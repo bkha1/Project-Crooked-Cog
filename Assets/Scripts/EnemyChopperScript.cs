@@ -6,21 +6,29 @@ public class EnemyChopperScript : MonoBehaviour {
     private MoveScript moveScript;
     private WeaponScript[] weapons;
     private Animator animator;
-    private SpriteRenderer[] renderers;
+    private SpriteRenderer renderer;
+    //BoxCollider2D collider;
 
-    public float minAttackCooldown = 0.5f;
+    public float minAttackCooldown = 1f;
     public float maxAttackCooldown = 5f;
     private float aiCooldown;
     private bool isAttacking;
 
-    private int isGatling = -1;
+    private int attackType = -1;
+
+    float hatchAngle = 0;
+
+    private Material defaultMaterial;
+    public Material hitMaterial;
+    private float hitflashCooldown;
 
     void Awake()
     {
         //moveScript = GetComponent<MoveScript>();
         weapons = GetComponentsInChildren<WeaponScript>();
         animator = GetComponent<Animator>();
-        renderers = GetComponentsInChildren<SpriteRenderer>();
+        renderer = GetComponentInChildren<SpriteRenderer>();
+        //collider = GetComponentInChildren<BoxCollider2D>();
     }//end Awake
 
     // Use this for initialization
@@ -28,11 +36,21 @@ public class EnemyChopperScript : MonoBehaviour {
     {
         isAttacking = false;
         aiCooldown = maxAttackCooldown;
+        defaultMaterial = renderer.material;
+
+        hitflashCooldown = 0;
     }
 
     // Update is called once per frame
     void Update()
     {
+        hitflashCooldown -= Time.deltaTime;
+
+        if (hitflashCooldown <= 0)
+        {
+            renderer.material = defaultMaterial;
+        }
+
         aiCooldown -= Time.deltaTime;
 
         if (aiCooldown <= 0f)
@@ -43,7 +61,7 @@ public class EnemyChopperScript : MonoBehaviour {
             // Set or unset the attack animation
             //animator.SetBool("Gatling", isAttacking);
 
-            isGatling = -1;
+            attackType = -1;
             animator.SetBool("Gatling", false);
             animator.SetBool("OpenHatch", false);
         }
@@ -52,16 +70,16 @@ public class EnemyChopperScript : MonoBehaviour {
         {
             // Stop any movement
             //moveScript.direction = Vector2.zero;
-            if (isGatling == -1)
+            if (attackType == -1)
             {
-                if (Random.Range(0, 3) < 2)
+                if (Random.Range(0, 4) < 2)
                 {
-                    isGatling = 0;
+                    attackType = 0;
                     animator.SetBool("Gatling", true);
                 }
                 else
                 {
-                    isGatling = 2;
+                    attackType = 2;
                     animator.SetBool("OpenHatch", true);
                     //aiCooldown = 3;
                 }
@@ -69,10 +87,22 @@ public class EnemyChopperScript : MonoBehaviour {
 
             foreach (WeaponScript weapon in weapons)
             {
-                if (weapon != null && weapon.enabled && weapon.CanAttack)
+                if (weapon != null && weapon.enabled && weapon.CanAttack(attackType))
                 {
-                    weapon.Attack(true, isGatling);
-                    //SoundEffectsHelper.Instance.MakeEnemyShotSound();
+                    SoundEffectsScript.Instance.playEnemyShootSound1(.75f);
+
+                    if (attackType == 0)//gatling
+                    {
+                        weapon.Attack(true, attackType,5);
+                    }
+                    else if (attackType == 2)//hatch
+                    {
+                        hatchAngle = Random.Range(225, 316);
+                        Vector3 temp = weapon.transform.eulerAngles;
+                        temp.z = hatchAngle;
+                        weapon.transform.eulerAngles = temp;
+                        weapon.Attack(true, attackType,3);
+                    }
                 }
             }
         }
@@ -80,11 +110,41 @@ public class EnemyChopperScript : MonoBehaviour {
         //constant angle guns attack
         foreach (WeaponScript weapon in weapons)
         {
-            if (weapon != null && weapon.enabled && weapon.CanAttack)
+            if (weapon != null && weapon.enabled && weapon.CanAttack())
             {
+                if (weapon.CanAttack(1))
+                {
+                    SoundEffectsScript.Instance.playEnemyShootSound1(.75f);
+                }
                 weapon.Attack(true, 1);
             }
         }
 
+    }
+
+
+
+    void OnTriggerEnter2D(Collider2D otherCollider2D)
+    {
+        ShotScript shot = otherCollider2D.gameObject.GetComponent<ShotScript>();
+        if (shot != null)
+        {
+            if (shot.isEnemyShot == false)
+            {
+                SoundEffectsScript.Instance.playHitSound1(.5f);
+
+                // Change animation
+                if (renderer != null)
+                {
+                    //Debug.Log(renderer.material.ToString());
+                    if (hitflashCooldown <= 0)
+                    {
+                        renderer.sharedMaterial = hitMaterial;//hitflash!
+                        hitflashCooldown = .2f;
+                    }
+                    
+                }              
+            }
+        }
     }
 }

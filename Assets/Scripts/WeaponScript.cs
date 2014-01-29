@@ -25,18 +25,38 @@ public class WeaponScript : MonoBehaviour {
         }
     }
 
-    public bool CanAttack
+    public bool CanAttack()
     {
-        get
+        /*get
         {
             return shootCooldown <= 0f;
+        }*/
+        if(shootCooldown <= 0f)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public bool CanAttack(int ID)
+    {
+        if (weaponID == ID)
+        {
+            return CanAttack();
+        }
+        else
+        {
+            return false;
         }
     }
 
     private ShotScript shot;
     public void Attack(bool isEnemy)
     {
-        if (CanAttack)
+        if (CanAttack())
         {
             shootCooldown = shootingRate;
             var shotTransform = Instantiate(shotPrefab) as Transform;
@@ -73,7 +93,7 @@ public class WeaponScript : MonoBehaviour {
     {
         if (weaponID == ID)
         {
-            if (CanAttack)
+            if (CanAttack())
             {
                 shootCooldown = shootingRate;
                 var shotTransform = Instantiate(shotPrefab) as Transform;

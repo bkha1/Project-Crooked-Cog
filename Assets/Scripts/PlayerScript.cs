@@ -103,6 +103,10 @@ public class PlayerScript : MonoBehaviour {
 
         foreach (WeaponScript weapon in weapons)
         {
+            if (weapon.CanAttack())
+            {
+                SoundEffectsScript.Instance.playPlayerShootSound1(.25f);
+            }
             weapon.Attack(false);
         }
 

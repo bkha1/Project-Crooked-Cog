@@ -3,9 +3,12 @@ using System.Collections;
 
 public class HealthScript : MonoBehaviour
 {
-
     public int hp = 2;
     public bool isEnemy = true;
+
+    void Awake()
+    {
+    }
 
     // Use this for initialization
     void Start()
@@ -38,7 +41,7 @@ public class HealthScript : MonoBehaviour
                 if (hp <= 0)
                 {
                     //SpecialEffectsHelper.Instance.Explosion(transform.position);
-                    //SoundEffectsHelper.Instance.MakeExplosionSound();
+                    SoundEffectsScript.Instance.playExplosionSound1(.5f);
                     // Dead!
                     Destroy(gameObject);
                 }
