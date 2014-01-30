@@ -8,6 +8,7 @@ public class SoundEffectsScript : MonoBehaviour {
     public AudioClip playerShootSound1;
     public AudioClip enemyShootSound1;
     public AudioClip explosionSound1;
+    public AudioClip explosionSound2;
     public AudioClip hitSound1;
 
 	// Use this for initialization
@@ -38,6 +39,11 @@ public class SoundEffectsScript : MonoBehaviour {
     public void playExplosionSound1(float volume)
     {
         playSound(explosionSound1, volume);
+    }
+
+    public void playExplosionSound2(float volume)
+    {
+        playSound(explosionSound2,volume);
     }
 
     public void playHitSound1(float volume)

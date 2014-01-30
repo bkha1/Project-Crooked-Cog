@@ -3,11 +3,10 @@ using System.Collections;
 
 public class EnemyChopperScript : MonoBehaviour {
 
-    private MoveScript moveScript;
+    private MoveScript move;
     private WeaponScript[] weapons;
     private Animator animator;
-    private SpriteRenderer renderer;
-    //BoxCollider2D collider;
+    private HealthScript health;
 
     public float minAttackCooldown = 1f;
     public float maxAttackCooldown = 5f;
@@ -18,17 +17,18 @@ public class EnemyChopperScript : MonoBehaviour {
 
     float hatchAngle = 0;
 
-    private Material defaultMaterial;
-    public Material hitMaterial;
-    private float hitflashCooldown;
+    private float sidegunCooldown;
+    private int hp;
+
+    private float patrolCooldown;
+    private bool patrolSouth;
 
     void Awake()
     {
-        //moveScript = GetComponent<MoveScript>();
+        move = GetComponent<MoveScript>();
         weapons = GetComponentsInChildren<WeaponScript>();
         animator = GetComponent<Animator>();
-        renderer = GetComponentInChildren<SpriteRenderer>();
-        //collider = GetComponentInChildren<BoxCollider2D>();
+        health = GetComponent<HealthScript>();
     }//end Awake
 
     // Use this for initialization
@@ -36,20 +36,51 @@ public class EnemyChopperScript : MonoBehaviour {
     {
         isAttacking = false;
         aiCooldown = maxAttackCooldown;
-        defaultMaterial = renderer.material;
 
-        hitflashCooldown = 0;
+        sidegunCooldown = 0;
+
+        //patrol stuff
+        patrolCooldown = 0;
+        patrolSouth = false;
+        move.speed = 0;
+        move.useDirection = true;
+        move.direction = 270;
     }
 
     // Update is called once per frame
     void Update()
     {
-        hitflashCooldown -= Time.deltaTime;
+        patrolCooldown -= Time.deltaTime;
 
-        if (hitflashCooldown <= 0)
+        if (patrolCooldown <= 0f)
         {
-            renderer.material = defaultMaterial;
+            patrolCooldown = 2;
+
+            int tempMove = Random.Range(0,4);
+            if (tempMove < 3)//idle
+            {
+                move.speed = 0;
+            }
+            else
+            {
+                patrolSouth = !patrolSouth;
+                if (patrolSouth)
+                {
+                    move.speed = 1;
+                }
+                else
+                {
+                    move.speed = -1;
+                }
+            }
         }
+        
+        if (health != null)
+        {
+            hp = health.getHealth();
+        }
+
+        sidegunCooldown -= Time.deltaTime;
 
         aiCooldown -= Time.deltaTime;
 
@@ -59,8 +90,6 @@ public class EnemyChopperScript : MonoBehaviour {
             aiCooldown = Random.Range(minAttackCooldown, maxAttackCooldown);
 
             // Set or unset the attack animation
-            //animator.SetBool("Gatling", isAttacking);
-
             attackType = -1;
             animator.SetBool("Gatling", false);
             animator.SetBool("OpenHatch", false);
@@ -70,9 +99,15 @@ public class EnemyChopperScript : MonoBehaviour {
         {
             // Stop any movement
             //moveScript.direction = Vector2.zero;
+            int t = 2;
+            if (hp <= 100)
+            {
+                t = 1;
+            }
+
             if (attackType == -1)
             {
-                if (Random.Range(0, 4) < 2)
+                if (Random.Range(0, 4) < t)
                 {
                     attackType = 0;
                     animator.SetBool("Gatling", true);
@@ -81,7 +116,7 @@ public class EnemyChopperScript : MonoBehaviour {
                 {
                     attackType = 2;
                     animator.SetBool("OpenHatch", true);
-                    //aiCooldown = 3;
+                    aiCooldown = maxAttackCooldown * 2;
                 }
             }
 
@@ -107,16 +142,24 @@ public class EnemyChopperScript : MonoBehaviour {
             }
         }
 
-        //constant angle guns attack
-        foreach (WeaponScript weapon in weapons)
+        if (sidegunCooldown <= 3)
         {
-            if (weapon != null && weapon.enabled && weapon.CanAttack())
+            //constant angle guns attack
+            foreach (WeaponScript weapon in weapons)
             {
-                if (weapon.CanAttack(1))
+                if (weapon != null && weapon.enabled && weapon.CanAttack())
                 {
-                    SoundEffectsScript.Instance.playEnemyShootSound1(.75f);
+                    if (weapon.CanAttack(1))
+                    {
+                        SoundEffectsScript.Instance.playEnemyShootSound1(.75f);
+                    }
+                    weapon.Attack(true, 1);
                 }
-                weapon.Attack(true, 1);
+            }
+
+            if (sidegunCooldown <= 0)
+            {
+                sidegunCooldown = 6;
             }
         }
 
@@ -131,19 +174,7 @@ public class EnemyChopperScript : MonoBehaviour {
         {
             if (shot.isEnemyShot == false)
             {
-                SoundEffectsScript.Instance.playHitSound1(.5f);
-
-                // Change animation
-                if (renderer != null)
-                {
-                    //Debug.Log(renderer.material.ToString());
-                    if (hitflashCooldown <= 0)
-                    {
-                        renderer.sharedMaterial = hitMaterial;//hitflash!
-                        hitflashCooldown = .2f;
-                    }
-                    
-                }              
+                SoundEffectsScript.Instance.playHitSound1(.5f);          
             }
         }
     }

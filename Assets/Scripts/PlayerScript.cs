@@ -138,6 +138,28 @@ public class PlayerScript : MonoBehaviour {
         // End of the update method
     }
 
+    void OnTriggerEnter2D(Collider2D otherCollider2D)
+    {
+        ShotScript shot = otherCollider2D.gameObject.GetComponent<ShotScript>();
+        //EnemyScript enemy = otherCollider2D.gameObject.GetComponent<EnemyScript>();
+        HealthScript enemy = otherCollider2D.gameObject.GetComponent<HealthScript>();
+
+        if (shot != null)
+        {
+            if (shot.isEnemyShot == true)
+            {
+                SoundEffectsScript.Instance.playExplosionSound2(1f);
+            }
+        }
+        else if (enemy != null)
+        {
+            if (enemy.isEnemy)
+            {
+                SoundEffectsScript.Instance.playExplosionSound2(1f);
+            }
+        }
+    }
+
     void OnDestroy()
     {
         // Game Over.
