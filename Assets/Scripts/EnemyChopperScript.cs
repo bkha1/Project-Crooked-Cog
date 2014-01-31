@@ -178,4 +178,8 @@ public class EnemyChopperScript : MonoBehaviour {
             }
         }
     }
+
+    void OnDestroy()
+    {
+    }
 }

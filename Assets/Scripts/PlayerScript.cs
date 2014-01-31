@@ -13,16 +13,21 @@ public class PlayerScript : MonoBehaviour {
 
     float inputX;
     float inputY;
-    
+
+    private bool appQuit = false;
+
+    void Awake()
+    {
+        weapons = GetComponentsInChildren<WeaponScript>();
+        animator = GetComponent<Animator>();
+    }
 
     // Use this for initialization
     void Start()
     {
-        weapons = GetComponentsInChildren<WeaponScript>();
-        animator = GetComponent<Animator>();
-
         //Screen.showCursor = false;
         Screen.lockCursor = true;
+        appQuit = false;
     }
 
     // Update is called once per frame
@@ -166,5 +171,16 @@ public class PlayerScript : MonoBehaviour {
         // Add the script to the parent because the current game
         // object is likely going to be destroyed immediately.
         //transform.parent.gameObject.AddComponent<GameOverScript>();
+        if (!appQuit)
+        {
+
+            SpecialEffectsScript.Instance.playExplosionPrefab(transform.position);
+        }
+    }
+
+    
+    void OnApplicationQuit()
+    {
+        appQuit = true;
     }
 }

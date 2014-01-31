@@ -58,10 +58,14 @@ public class HealthScript : MonoBehaviour
             // Avoid friendly fire
             if (shot.isEnemyShot != isEnemy)
             {
+
+                SpecialEffectsScript.Instance.playExplosionPrefab(shot.gameObject.transform.position);
+
                 // Destroy the shot
                 // Remember to always target the game object,
                 // otherwise you will just remove the script.
                 Destroy(shot.gameObject);
+                
 
                 if (!isInvincible)
                 {
@@ -79,33 +83,8 @@ public class HealthScript : MonoBehaviour
                         }
                     }
                 }
-
-                
             }
         }
-        /*else if (!isEnemy)
-        {
-            EnemyScript enemy = collider.gameObject.GetComponent<EnemyScript>();
-            if (enemy != null)
-            {
-                if (!isInvincible)
-                {
-                    hp -= enemy.damage;
-
-                    if (hitflashCooldown <= 0)
-                    {
-                        foreach (SpriteRenderer sprite in renderers)
-                        {
-                            if (sprite != null)
-                            {
-                                sprite.sharedMaterial = hitMaterial;
-                                hitflashCooldown = .2f;
-                            }
-                        }
-                    }
-                }
-            }
-        }*/
 
         if (hp <= 0)
         {
@@ -120,27 +99,6 @@ public class HealthScript : MonoBehaviour
     {
         if (!isEnemy)
         {
-            /*EnemyScript enemy = collider.gameObject.GetComponent<EnemyScript>();
-            if (enemy != null)
-            {
-                if (!isInvincible)
-                {
-                    hp -= enemy.damage;
-
-                    if (hitflashCooldown <= 0)
-                    {
-                        foreach (SpriteRenderer sprite in renderers)
-                        {
-                            if (sprite != null)
-                            {
-                                sprite.sharedMaterial = hitMaterial;
-                                hitflashCooldown = .2f;
-                            }
-                        }
-                    }
-                }
-            }*/
-
             HealthScript enemy = collider.gameObject.GetComponent<HealthScript>();
             if (enemy != null)
             {
