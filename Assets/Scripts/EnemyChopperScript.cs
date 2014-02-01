@@ -23,6 +23,8 @@ public class EnemyChopperScript : MonoBehaviour {
     private float patrolCooldown;
     private bool patrolSouth;
 
+    private GameObject tempPlayer;
+
     void Awake()
     {
         move = GetComponent<MoveScript>();
@@ -132,11 +134,22 @@ public class EnemyChopperScript : MonoBehaviour {
                     }
                     else if (attackType == 2)//hatch
                     {
-                        hatchAngle = Random.Range(225, 316);
+                        tempPlayer = GameObject.FindGameObjectWithTag("Player");
+                        if (tempPlayer != null)
+                        {
+                            //hatchAngle = Mathf.Rad2Deg * Mathf.Atan((tempPlayer.transform.position.y - transform.position.y)/((tempPlayer.transform.position.x - transform.position.x)));
+                            hatchAngle = Vector3.Angle(Vector3.right, tempPlayer.transform.position - transform.position) * -1;
+                            //Debug.Log(hatchAngle);
+                            hatchAngle += Random.Range(-15, 16);
+                        }
+                        else
+                        {
+                            hatchAngle = Random.Range(225, 316);
+                        }
                         Vector3 temp = weapon.transform.eulerAngles;
                         temp.z = hatchAngle;
                         weapon.transform.eulerAngles = temp;
-                        weapon.Attack(true, attackType,3);
+                        weapon.Attack(true, attackType,4);
                     }
                 }
             }

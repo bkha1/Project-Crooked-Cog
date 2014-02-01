@@ -117,4 +117,37 @@ public class WeaponScript : MonoBehaviour {
             }
         }
     }
+
+    public void Attack(bool isEnemy, int ID, int speed, float size)
+    {
+        if (weaponID == ID)
+        {
+            if (CanAttack())
+            {
+                shootCooldown = shootingRate;
+                var shotTransform = Instantiate(shotPrefab) as Transform;
+                Vector3 tempScale = shotTransform.localScale;
+                tempScale.x = size;
+                tempScale.y = size;
+                shotTransform.localScale = tempScale;
+                shotTransform.position = transform.position;
+
+                shotTransform.rotation = transform.rotation;
+
+                shot = shotTransform.gameObject.GetComponent<ShotScript>();
+
+                if (shot != null)
+                {
+                    shot.isEnemyShot = isEnemy;
+                }
+
+                MoveScript move = shotTransform.gameObject.GetComponent<MoveScript>();
+
+                if (move != null)
+                {
+                    move.speed = speed;
+                }
+            }
+        }
+    }
 }
