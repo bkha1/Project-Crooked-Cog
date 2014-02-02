@@ -25,6 +25,8 @@ public class EnemyChopperScript : MonoBehaviour {
 
     private GameObject tempPlayer;
 
+    private int hpThreshold;
+
     void Awake()
     {
         move = GetComponent<MoveScript>();
@@ -47,6 +49,8 @@ public class EnemyChopperScript : MonoBehaviour {
         move.speed = 0;
         move.useDirection = true;
         move.direction = 270;
+
+        hpThreshold = 50;
     }
 
     // Update is called once per frame
@@ -102,7 +106,7 @@ public class EnemyChopperScript : MonoBehaviour {
             // Stop any movement
             //moveScript.direction = Vector2.zero;
             int t = 2;
-            if (hp <= 100)
+            if (hp <= hpThreshold)
             {
                 t = 1;
             }

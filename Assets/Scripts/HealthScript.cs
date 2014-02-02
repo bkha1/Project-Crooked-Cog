@@ -66,7 +66,6 @@ public class HealthScript : MonoBehaviour
                 // otherwise you will just remove the script.
                 Destroy(shot.gameObject);
                 
-
                 if (!isInvincible)
                 {
                     hp -= shot.damage;

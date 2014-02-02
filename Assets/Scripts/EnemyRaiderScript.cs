@@ -15,6 +15,10 @@ public class EnemyRaiderScript : MonoBehaviour {
     private float flashingCooldown = .25f;
     private bool flashingRed = false;
 
+    //for reviving support choppers
+    private float reviveCooldown = 10;
+    //public Transform chopperPrefab;
+
     void Awake()
     {
         weapons = GetComponentsInChildren<WeaponScript>();
@@ -25,10 +29,78 @@ public class EnemyRaiderScript : MonoBehaviour {
 	void Start () {
         aiCooldown = maxAttackCooldown;
         isAttacking = false;
+        reviveCooldown = 10;
 	}
 	
 	// Update is called once per frame
 	void Update () {
+        reviveCooldown -= Time.deltaTime;
+        if (reviveCooldown <= 0f)
+        {
+            bool checkSide = false;
+            EnemyChopperScript[] tempObjects;
+            tempObjects = GameObject.FindObjectsOfType<EnemyChopperScript>();
+            if (Random.Range(0, 2) == 0)//right side
+            {
+                if (tempObjects != null)
+                {
+                    foreach (EnemyChopperScript chopper in tempObjects)
+                    {
+                        if (chopper.gameObject.transform.position.x > transform.position.x)
+                        {
+                            checkSide = true;
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    checkSide = false;
+                }
+
+                if (checkSide == false)
+                {
+                    //spawn chopper
+                    /*var chopperTransform = Instantiate(chopperPrefab) as Transform;
+                    chopperTransform.parent = transform.parent;
+                    chopperTransform.position = new Vector3(3.5f, 2.5f, 0);*/
+                    EnemySpawnScript.Instance.spawnEnemyChopper(new Vector3(3.5f, 2.5f, 0));
+                }
+                checkSide = false;
+            }
+            else//left side
+            {
+                if (tempObjects != null)
+                {
+                    foreach (EnemyChopperScript chopper in tempObjects)
+                    {
+                        if (chopper.gameObject.transform.position.x < transform.position.x)
+                        {
+                            checkSide = true;
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    checkSide = false;
+                }
+
+                if (checkSide == false)
+                {
+                    //spawn chopper
+                    /*var chopperTransform = Instantiate(chopperPrefab) as Transform;
+                    chopperTransform.parent = transform.parent;
+                    chopperTransform.position = new Vector3(-3.5f, 2.5f, 0);*/
+                    EnemySpawnScript.Instance.spawnEnemyChopper(new Vector3(-3.5f,2.5f,0));
+                }
+                checkSide = false;
+            }
+
+            checkSide = false;
+            reviveCooldown = 10;
+        }
+
         aiCooldown -= Time.deltaTime;
 
         if (aiCooldown <= 0f)

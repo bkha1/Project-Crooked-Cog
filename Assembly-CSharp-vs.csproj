@@ -48,6 +48,7 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\EnemyChopperScript.cs" />
      <Compile Include="Assets\Scripts\EnemyRaiderScript.cs" />
+     <Compile Include="Assets\Scripts\EnemySpawnScript.cs" />
      <Compile Include="Assets\Scripts\HealthScript.cs" />
      <Compile Include="Assets\Scripts\MoveScript.cs" />
      <Compile Include="Assets\Scripts\PlayerScript.cs" />
@@ -55,6 +56,7 @@
      <Compile Include="Assets\Scripts\ShotScript.cs" />
      <Compile Include="Assets\Scripts\SoundEffectsScript.cs" />
      <Compile Include="Assets\Scripts\SpecialEffectsScript.cs" />
+     <Compile Include="Assets\Scripts\StageStatsScript.cs" />
      <Compile Include="Assets\Scripts\WeaponScript.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

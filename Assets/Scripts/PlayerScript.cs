@@ -173,8 +173,8 @@ public class PlayerScript : MonoBehaviour {
         //transform.parent.gameObject.AddComponent<GameOverScript>();
         if (!appQuit)
         {
-
             SpecialEffectsScript.Instance.playExplosionPrefab(transform.position);
+            StageStatsScript.Instance.numOfDeaths++;
         }
     }
 
