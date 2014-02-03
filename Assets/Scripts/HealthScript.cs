@@ -59,7 +59,7 @@ public class HealthScript : MonoBehaviour
             if (shot.isEnemyShot != isEnemy)
             {
 
-                SpecialEffectsScript.Instance.playExplosionPrefab(shot.gameObject.transform.position);
+                SpecialEffectsScript.Instance.playExplosionPrefab(shot.gameObject.transform.position, new Vector2(1, 1));
 
                 // Destroy the shot
                 // Remember to always target the game object,

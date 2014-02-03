@@ -28,7 +28,7 @@ public class SpecialEffectsScript : MonoBehaviour {
     /// Create an explosion at the given location
     /// </summary>
     /// <param name="position"></param>
-    public void playExplosionPrefab(Vector3 position)
+    public void playExplosionPrefab(Vector3 position,Vector3 scale)
     {
         // Smoke on the water
         //instantiate(smokeEffect, position);
@@ -40,6 +40,7 @@ public class SpecialEffectsScript : MonoBehaviour {
 
         var explosionTransform = Instantiate(explosionPrefab) as Transform;
         explosionTransform.position = position;
+        explosionTransform.localScale = scale;
         
         Destroy(explosionTransform.gameObject,1f);
     }

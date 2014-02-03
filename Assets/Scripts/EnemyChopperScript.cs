@@ -198,5 +198,25 @@ public class EnemyChopperScript : MonoBehaviour {
 
     void OnDestroy()
     {
+        if (!appQuit)
+        {
+            Vector3 explosionPosition = transform.position;
+            SpecialEffectsScript.Instance.playExplosionPrefab(explosionPosition, new Vector2(1, 1));
+
+            for (int i = 0; i < 10; i++)
+            {
+                explosionPosition.x += Random.Range(-1f, 1f);
+                explosionPosition.y += Random.Range(-1f, 1f);
+                SpecialEffectsScript.Instance.playExplosionPrefab(explosionPosition,new Vector2(1,1));
+                explosionPosition = transform.position;
+            }
+            //SpecialEffectsScript.Instance.playExplosionPrefab(transform.position);
+        }
+    }
+
+    private bool appQuit = false;
+    void OnApplicationQuit()
+    {
+        appQuit = true;
     }
 }

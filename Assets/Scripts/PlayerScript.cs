@@ -33,49 +33,14 @@ public class PlayerScript : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        Screen.showCursor = false;
+        /*Screen.showCursor = false;
         Screen.lockCursor = true;
-        /*float inputX = Input.GetAxis("Horizontal");
-        float inputY = Input.GetAxis("Vertical");
 
-        movement = new Vector2(speed.x * inputX, speed.y * inputY);*/
-
-        //float inputX = Input.mousePosition.x;
-        //float inputY = Input.mousePosition.y;
-        /*if (playerpos != null)
-        {
-            oldplayerpos = playerpos;
-        }*/
-
-        //playerpos = Input.mousePosition;
-        //playerpos = Camera.main.ScreenToWorldPoint(playerpos);
-        //transform.position = new Vector2(playerpos.x,playerpos.y);
 
         inputX = Input.GetAxis("Mouse X");
         inputY = Input.GetAxis("Mouse Y");
         movement = new Vector2(inputX, inputY);
-        //movement *= Time.deltaTime * speed;
         transform.position += (Vector3)movement;
-        //transform.position = new Vector2(playerpos.x, playerpos.y);
-
-        /*if (oldplayerpos != null)
-        {
-            if (oldplayerpos.x < playerpos.x)
-            {
-                animator.SetBool("goRight", true);
-                animator.SetBool("goLeft", false);
-            }
-            else if (oldplayerpos.x > playerpos.x)
-            {
-                animator.SetBool("goRight", false);
-                animator.SetBool("goLeft", true);
-            }
-            else
-            {
-                animator.SetBool("goRight", false);
-                animator.SetBool("goLeft", false);
-            }
-        }*/
 
         if (inputX > 0)
         {
@@ -91,7 +56,9 @@ public class PlayerScript : MonoBehaviour {
         {
             animator.SetBool("goRight", false);
             animator.SetBool("goLeft", false);
-        }
+        }*/
+
+        moveController();
 
         /*bool shoot = Input.GetButtonDown("Fire1");
         shoot |= Input.GetButtonDown("Fire2");
@@ -143,6 +110,34 @@ public class PlayerScript : MonoBehaviour {
         // End of the update method
     }
 
+    void moveController()
+    {
+        Screen.showCursor = false;
+        Screen.lockCursor = true;
+
+
+        inputX = Input.GetAxis("Mouse X");
+        inputY = Input.GetAxis("Mouse Y");
+        movement = new Vector2(inputX, inputY);
+        transform.position += (Vector3)movement;
+
+        if (inputX > 0)
+        {
+            animator.SetBool("goRight", true);
+            animator.SetBool("goLeft", false);
+        }
+        else if (inputX < 0)
+        {
+            animator.SetBool("goRight", false);
+            animator.SetBool("goLeft", true);
+        }
+        else
+        {
+            animator.SetBool("goRight", false);
+            animator.SetBool("goLeft", false);
+        }
+    }
+
     void OnTriggerEnter2D(Collider2D otherCollider2D)
     {
         ShotScript shot = otherCollider2D.gameObject.GetComponent<ShotScript>();
@@ -173,7 +168,7 @@ public class PlayerScript : MonoBehaviour {
         //transform.parent.gameObject.AddComponent<GameOverScript>();
         if (!appQuit)
         {
-            SpecialEffectsScript.Instance.playExplosionPrefab(transform.position);
+            SpecialEffectsScript.Instance.playExplosionPrefab(transform.position, new Vector2(1, 1));
             StageStatsScript.Instance.numOfDeaths++;
         }
     }

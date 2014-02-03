@@ -5,9 +5,9 @@ public class StageStatsScript: MonoBehaviour {
 
     public static StageStatsScript Instance;
 
-    public int comboReq;
-    public float timeReq;
-    public int deathReq;
+    public int parCombo;
+    public float parTime;
+    public int parDeath;
 
     public int highestCombo;
     public float stageTime;
@@ -75,8 +75,8 @@ public class StageStatsScript: MonoBehaviour {
         highestCombo++;
     }
 
-    public Texture barBackTexture;
-    public Texture barFrontTexture;
+    //public GUITexture barBackTexture;
+    public GUITexture upgradeMeter;
     void OnGUI()
     {
         //GUI.Box(new Rect(Screen.width * .15f, Screen.height * .96f, Screen.width / 4 , 20), "100"+ "/" +"100");

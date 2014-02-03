@@ -173,4 +173,28 @@ public class EnemyRaiderScript : MonoBehaviour {
             }
         }
     }
+
+    void OnDestroy()
+    {
+        if (!appQuit)
+        {
+            Vector3 explosionPosition = transform.position;
+            SpecialEffectsScript.Instance.playExplosionPrefab(explosionPosition, new Vector2(2,2));
+
+            for (int i = 0; i < 30; i++)
+            {
+                explosionPosition.x += Random.Range(-2f, 2f);
+                explosionPosition.y += Random.Range(-2f, 2f);
+                SpecialEffectsScript.Instance.playExplosionPrefab(explosionPosition, new Vector2(2, 2));
+                explosionPosition = transform.position;
+            }
+            //SpecialEffectsScript.Instance.playExplosionPrefab(transform.position);
+        }
+    }
+
+    private bool appQuit = false;
+    void OnApplicationQuit()
+    {
+        appQuit = true;
+    }
 }
