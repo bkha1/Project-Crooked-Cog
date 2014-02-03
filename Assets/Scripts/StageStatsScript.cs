@@ -30,6 +30,8 @@ public class StageStatsScript: MonoBehaviour {
     public GUITexture upgradeMeter;
     private int meterMaxWidth = 120;
 
+    private bool pauseTimer;
+
     void Awake()
     {
         if (Instance != null)
@@ -53,6 +55,8 @@ public class StageStatsScript: MonoBehaviour {
         playerLives = 3;
         levelValue = 1;
 
+        pauseTimer = false;
+
         respawnCooldown = respawnTime;
 	}
 	
@@ -63,7 +67,7 @@ public class StageStatsScript: MonoBehaviour {
         tempMeter.width = ((float)playerXP / (float)nextLevel) * meterMaxWidth; ;
         upgradeMeter.pixelInset = tempMeter;
 
-        if (playerLives > 0)
+        if (!pauseTimer)
         {
             stageTime += Time.deltaTime;
         }
@@ -208,6 +212,7 @@ public class StageStatsScript: MonoBehaviour {
         }
         else
         {
+            pauseTimer = true;
             playerLives = 0;
             //GAME OVER
         }
