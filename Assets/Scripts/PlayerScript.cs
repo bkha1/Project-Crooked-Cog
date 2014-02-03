@@ -4,15 +4,11 @@ using System.Collections;
 public class PlayerScript : MonoBehaviour {
 
     public Vector2 speed = new Vector2(5, 5);
-    private Vector2 movement;
-    //private Animator animator;
     private WeaponScript[] weapons;
     private Animator animator;
     private Vector3 playerpos;
     private Vector3 oldplayerpos;
-
-    float inputX;
-    float inputY;
+    private PlayerMovementScript playerMovementScript;
 
     private bool appQuit = false;
 
@@ -20,34 +16,26 @@ public class PlayerScript : MonoBehaviour {
     {
         weapons = GetComponentsInChildren<WeaponScript>();
         animator = GetComponent<Animator>();
+        playerMovementScript = GetComponent<PlayerMovementScript>();
     }
 
     // Use this for initialization
     void Start()
     {
-        //Screen.showCursor = false;
-        Screen.lockCursor = true;
         appQuit = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        /*Screen.showCursor = false;
-        Screen.lockCursor = true;
 
-
-        inputX = Input.GetAxis("Mouse X");
-        inputY = Input.GetAxis("Mouse Y");
-        movement = new Vector2(inputX, inputY);
-        transform.position += (Vector3)movement;
-
-        if (inputX > 0)
+        //animations
+        if (playerMovementScript.inputX > 0)
         {
             animator.SetBool("goRight", true);
             animator.SetBool("goLeft", false);
         }
-        else if (inputX < 0)
+        else if (playerMovementScript.inputX < 0)
         {
             animator.SetBool("goRight", false);
             animator.SetBool("goLeft", true);
@@ -56,9 +44,7 @@ public class PlayerScript : MonoBehaviour {
         {
             animator.SetBool("goRight", false);
             animator.SetBool("goLeft", false);
-        }*/
-
-        moveController();
+        }
 
         /*bool shoot = Input.GetButtonDown("Fire1");
         shoot |= Input.GetButtonDown("Fire2");
@@ -75,67 +61,16 @@ public class PlayerScript : MonoBehaviour {
 
         foreach (WeaponScript weapon in weapons)
         {
-            if (weapon.CanAttack())
+            if(StageStatsScript.Instance.levelValue>weapon.weaponID)
             {
-                SoundEffectsScript.Instance.playPlayerShootSound1(.25f);
+                if (weapon.CanAttack())
+                {
+                    SoundEffectsScript.Instance.playPlayerShootSound1(.25f);
+                }
+                weapon.Attack(false);
             }
-            weapon.Attack(false);
         }
-
-        // 6 - Make sure we are not outside the camera bounds
-        var dist = (transform.position - Camera.main.transform.position).z;
-
-        var leftBorder = Camera.main.ViewportToWorldPoint(
-          new Vector3(0, 0, dist)
-        ).x;
-
-        var rightBorder = Camera.main.ViewportToWorldPoint(
-          new Vector3(1, 0, dist)
-        ).x;
-
-        var topBorder = Camera.main.ViewportToWorldPoint(
-          new Vector3(0, 0, dist)
-        ).y;
-
-        var bottomBorder = Camera.main.ViewportToWorldPoint(
-          new Vector3(0, 1, dist)
-        ).y;
-
-        transform.position = new Vector3(
-          Mathf.Clamp(transform.position.x, leftBorder, rightBorder),
-          Mathf.Clamp(transform.position.y, topBorder, bottomBorder),
-          transform.position.z
-        );
-
         // End of the update method
-    }
-
-    void moveController()
-    {
-        Screen.showCursor = false;
-        Screen.lockCursor = true;
-
-
-        inputX = Input.GetAxis("Mouse X");
-        inputY = Input.GetAxis("Mouse Y");
-        movement = new Vector2(inputX, inputY);
-        transform.position += (Vector3)movement;
-
-        if (inputX > 0)
-        {
-            animator.SetBool("goRight", true);
-            animator.SetBool("goLeft", false);
-        }
-        else if (inputX < 0)
-        {
-            animator.SetBool("goRight", false);
-            animator.SetBool("goLeft", true);
-        }
-        else
-        {
-            animator.SetBool("goRight", false);
-            animator.SetBool("goLeft", false);
-        }
     }
 
     void OnTriggerEnter2D(Collider2D otherCollider2D)
@@ -170,9 +105,10 @@ public class PlayerScript : MonoBehaviour {
         {
             SpecialEffectsScript.Instance.playExplosionPrefab(transform.position, new Vector2(1, 1));
             StageStatsScript.Instance.numOfDeaths++;
+
+            StageStatsScript.Instance.respawn();
         }
     }
-
     
     void OnApplicationQuit()
     {

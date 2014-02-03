@@ -5,7 +5,7 @@ public class StageStatsScript: MonoBehaviour {
 
     public static StageStatsScript Instance;
 
-    public int parCombo;
+    public int parCombo;//points gained after a full combo
     public float parTime;
     public int parDeath;
 
@@ -13,12 +13,22 @@ public class StageStatsScript: MonoBehaviour {
     public float stageTime;
     public int numOfDeaths;
 
-    public int playerXP;
-    public int XPdecreaseRate = 2;
-    private float perSecond = 0;
+    private int currentCombo;
 
-    //public TextMesh timeValueText;
+    public int playerXP;
+    public int XPdecreaseRate = 5;
+    private float perSecond = 0;
+    private int nextLevel = 100;
+    public int levelValue = 1;
+
+    public int playerLives = 3;
+
     public GUIText timeValueText;
+    public GUIText livesValueText;
+    public GUIText levelValueText;
+
+    public GUITexture upgradeMeter;
+    private int meterMaxWidth = 120;
 
     void Awake()
     {
@@ -36,28 +46,96 @@ public class StageStatsScript: MonoBehaviour {
         stageTime = 0;
         numOfDeaths = 0;
 
+        currentCombo = 0;
         playerXP = 0;
         perSecond = 0;
+
+        playerLives = 3;
+        levelValue = 1;
+
+        respawnCooldown = respawnTime;
 	}
 	
 	// Update is called once per frame
 	void Update () {
 
-        stageTime += Time.deltaTime;
+        Rect tempMeter = upgradeMeter.pixelInset;
+        tempMeter.width = ((float)playerXP / (float)nextLevel) * meterMaxWidth; ;
+        upgradeMeter.pixelInset = tempMeter;
+
+        if (playerLives > 0)
+        {
+            stageTime += Time.deltaTime;
+        }
         perSecond += Time.deltaTime;
 
         if (perSecond >= 1)
         {
-            playerXP -= XPdecreaseRate;
+            playerXP -= (int)((float)nextLevel * .05f);//XPdeceaseRate;
             perSecond = 0;
         }
 
         if (playerXP < 0)
         {
-            playerXP = 0;
+            //playerXP = 0;
+            if (levelValue > 1)
+            {
+                levelValue--;
+                nextLevel = (int)(nextLevel / 1.8);
+                playerXP = nextLevel;
+                //Debug.Log(nextLevel);
+            }
+            else
+            {
+                playerXP = 0;
+            }
+        }
+
+        if (levelValue < 1)
+        {
+            levelValue = 1;
+        }
+
+        if (playerXP > nextLevel)
+        {
+            if (levelValue < 3)
+            {
+                SoundEffectsScript.Instance.playPowerUpSound1(1);
+                levelValue++;
+                playerXP = 0;
+                nextLevel = (int)(nextLevel * 1.8);
+            }
+            else
+            {
+                int tempDiff = playerXP - nextLevel;
+                currentCombo += tempDiff;
+                if (highestCombo < currentCombo)
+                {
+                    highestCombo = currentCombo;
+                }
+                playerXP = nextLevel;
+                Debug.Log("highest combo " + highestCombo);
+            }
         }
 
         timeValueText.text = stageTime.ToString("0.##");
+        livesValueText.text = playerLives.ToString();
+        levelValueText.text = levelValue.ToString();
+
+        if (respawning)
+        {
+            levelValue = 1;
+            nextLevel = 50;
+            playerXP = 0;
+            currentCombo = 0;
+            respawnCooldown-=Time.deltaTime;
+            if (respawnCooldown <= 0)
+            {
+                respawnCooldown = respawnTime;
+                respawning = false;
+                StartCoroutine(respawnPlayer(Instantiate(player) as Transform));
+            }
+        }
 	}
 
     public void increaseXP(int i)
@@ -75,8 +153,67 @@ public class StageStatsScript: MonoBehaviour {
         highestCombo++;
     }
 
-    //public GUITexture barBackTexture;
-    public GUITexture upgradeMeter;
+    public Transform player;
+    private float respawnCooldown;
+    public float respawnTime = 1;
+    private bool respawning = false;
+    IEnumerator respawnPlayer(Transform playerObject)
+    {
+        playerObject.position = new Vector3(0, -3, 0);
+
+        foreach (Behaviour childComponent in playerObject.GetComponentsInChildren<Behaviour>())
+        {
+            childComponent.enabled = false;
+        }
+
+        foreach (Animator rend in playerObject.GetComponentsInChildren<Animator>())
+        {
+            rend.enabled = true;
+        }
+
+        foreach (SpriteRenderer spr in playerObject.GetComponentsInChildren<SpriteRenderer>())
+        {
+            spr.enabled = true;
+            Color tempCol = spr.color;
+            tempCol.a = .5f;
+            spr.color = tempCol;
+        }
+
+        PlayerMovementScript mov = playerObject.GetComponent<PlayerMovementScript>();
+        mov.enabled = true;
+
+        yield return new WaitForSeconds(2f);
+
+        foreach (Behaviour childCompnent in playerObject.GetComponentsInChildren<Behaviour>())
+        {
+            childCompnent.enabled = true;
+        }
+
+        foreach (SpriteRenderer spr in playerObject.GetComponentsInChildren<SpriteRenderer>())
+        {
+            Color tempCol = spr.color;
+            tempCol.a = 1f;
+            spr.color = tempCol;
+        }
+    }
+
+    public void respawn()
+    {
+        //playerLives--;
+
+        if (playerLives > 0)
+        {
+            playerLives--;
+            respawning = true;
+        }
+        else
+        {
+            playerLives = 0;
+            //GAME OVER
+        }
+    }
+
+    
     void OnGUI()
     {
         //GUI.Box(new Rect(Screen.width * .15f, Screen.height * .96f, Screen.width / 4 , 20), "100"+ "/" +"100");

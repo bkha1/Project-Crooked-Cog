@@ -81,6 +81,11 @@ public class HealthScript : MonoBehaviour
                             }
                         }
                     }
+
+                    if (!shot.isEnemyShot)
+                    {
+                        StageStatsScript.Instance.playerXP += shot.damage;
+                    }
                 }
             }
         }
