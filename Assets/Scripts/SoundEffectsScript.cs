@@ -11,6 +11,7 @@ public class SoundEffectsScript : MonoBehaviour {
     public AudioClip explosionSound2;
     public AudioClip hitSound1;
     public AudioClip powerUpSound1;
+    public AudioClip comboSound1;
 
 	// Use this for initialization
 	void Start ()
@@ -55,6 +56,11 @@ public class SoundEffectsScript : MonoBehaviour {
     public void playPowerUpSound1(float volume)
     {
         playSound(powerUpSound1, volume);
+    }
+
+    public void playComboSound1(float volume)
+    {
+        playSound(comboSound1, volume);
     }
 
     private void playSound(AudioClip clip, float volume)

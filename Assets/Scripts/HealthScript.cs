@@ -40,7 +40,6 @@ public class HealthScript : MonoBehaviour
             }
             //renderer.material = defaultMaterial;
         }
-
     }
 
     public int getHealth()
@@ -61,6 +60,8 @@ public class HealthScript : MonoBehaviour
 
                 SpecialEffectsScript.Instance.playExplosionPrefab(shot.gameObject.transform.position, new Vector2(1, 1));
 
+                
+
                 // Destroy the shot
                 // Remember to always target the game object,
                 // otherwise you will just remove the script.
@@ -79,6 +80,13 @@ public class HealthScript : MonoBehaviour
                                 sprite.sharedMaterial = hitMaterial;
                                 hitflashCooldown = .2f;
                             }
+                        }
+
+                        //combotext popups!
+                        if (StageStatsScript.Instance.currentCombo > 0)
+                        {
+                            SoundEffectsScript.Instance.playComboSound1(1f);
+                            SpecialEffectsScript.Instance.playComboTextPrefab(new Vector3(shot.gameObject.transform.position.x, shot.gameObject.transform.position.y, -5), new Vector2(1, 1));
                         }
                     }
 

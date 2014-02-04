@@ -13,12 +13,12 @@ public class StageStatsScript: MonoBehaviour {
     public float stageTime;
     public int numOfDeaths;
 
-    private int currentCombo;
+    public int currentCombo;
 
     public int playerXP;
     public int XPdecreaseRate = 5;
     private float perSecond = 0;
-    private int nextLevel = 100;
+    private int nextLevel = 80;
     public int levelValue = 1;
 
     public int playerLives = 3;
@@ -73,26 +73,25 @@ public class StageStatsScript: MonoBehaviour {
         }
         perSecond += Time.deltaTime;
 
-        if (perSecond >= 1)
+        if (perSecond >= .25f)//player will lose 5 percent of bar every second
         {
-            playerXP -= (int)((float)nextLevel * .05f);//XPdeceaseRate;
+            playerXP -= (int)((float)nextLevel * .05f * .25f);
             perSecond = 0;
         }
 
         if (playerXP < 0)
         {
-            //playerXP = 0;
-            if (levelValue > 1)
+            playerXP = 0;
+            /*if (levelValue > 1)
             {
                 levelValue--;
                 nextLevel = (int)(nextLevel / 1.8);
                 playerXP = nextLevel;
-                //Debug.Log(nextLevel);
             }
             else
             {
                 playerXP = 0;
-            }
+            }*/
         }
 
         if (levelValue < 1)
@@ -118,18 +117,19 @@ public class StageStatsScript: MonoBehaviour {
                     highestCombo = currentCombo;
                 }
                 playerXP = nextLevel;
-                Debug.Log("highest combo " + highestCombo);
+                //Debug.Log("highest combo " + highestCombo);
+                //Debug.Log("current combo " + currentCombo);
             }
         }
 
-        timeValueText.text = stageTime.ToString("0.##");
-        livesValueText.text = playerLives.ToString();
-        levelValueText.text = levelValue.ToString();
+        timeValueText.text = "Time:" + stageTime.ToString("0.##");
+        livesValueText.text = "x" + playerLives.ToString();
+        levelValueText.text = "Lvl:" + levelValue.ToString();
 
         if (respawning)
         {
             levelValue = 1;
-            nextLevel = 50;
+            nextLevel = 80;
             playerXP = 0;
             currentCombo = 0;
             respawnCooldown-=Time.deltaTime;
