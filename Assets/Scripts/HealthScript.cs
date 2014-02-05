@@ -83,7 +83,7 @@ public class HealthScript : MonoBehaviour
                         }
 
                         //combotext popups!
-                        if (StageStatsScript.Instance.currentCombo > 0)
+                        if (StageStatsScript.Instance.currentCombo > 0 && StageStatsScript.Instance.playerXP >= StageStatsScript.Instance.nextLevel)
                         {
                             SoundEffectsScript.Instance.playComboSound1(1f);
                             SpecialEffectsScript.Instance.playComboTextPrefab(new Vector3(shot.gameObject.transform.position.x, shot.gameObject.transform.position.y, -5), new Vector2(1, 1));

@@ -5,9 +5,9 @@ public class StageStatsScript: MonoBehaviour {
 
     public static StageStatsScript Instance;
 
-    public int parCombo;//points gained after a full combo
-    public float parTime;
-    public int parDeath;
+    public int parCombo = 1000;//points gained after a full combo
+    public float parTime = 60;//seconds to beat to get S rank
+    public int parDeath = 3;//deaths to avoid to get S rank
 
     public int highestCombo;
     public float stageTime;
@@ -15,10 +15,11 @@ public class StageStatsScript: MonoBehaviour {
 
     public int currentCombo;
 
-    public int playerXP;
-    public int XPdecreaseRate = 5;
+    public float playerXP;
+    //public int XPdecreaseRate = 5;
     private float perSecond = 0;
-    private int nextLevel = 80;
+    public int nextLevel;
+    public int baseXPReq = 50;
     public int levelValue = 1;
 
     public int playerLives = 3;
@@ -52,6 +53,8 @@ public class StageStatsScript: MonoBehaviour {
         playerXP = 0;
         perSecond = 0;
 
+        nextLevel = baseXPReq;
+
         playerLives = 3;
         levelValue = 1;
 
@@ -71,17 +74,19 @@ public class StageStatsScript: MonoBehaviour {
         {
             stageTime += Time.deltaTime;
         }
+
         perSecond += Time.deltaTime;
 
-        if (perSecond >= .25f)//player will lose 5 percent of bar every second
+        if (perSecond >= .2f)//player will lose 5 percent of bar every second
         {
-            playerXP -= (int)((float)nextLevel * .05f * .25f);
+            playerXP -= ((float)nextLevel * .05f * .2f);
             perSecond = 0;
         }
 
         if (playerXP < 0)
         {
             playerXP = 0;
+            currentCombo = 0;
             /*if (levelValue > 1)
             {
                 levelValue--;
@@ -106,19 +111,17 @@ public class StageStatsScript: MonoBehaviour {
                 SoundEffectsScript.Instance.playPowerUpSound1(1);
                 levelValue++;
                 playerXP = 0;
-                nextLevel = (int)(nextLevel * 1.8);
+                nextLevel = (int)(nextLevel * 1.8);//xp requirement increases by 1.8 times
             }
             else
             {
-                int tempDiff = playerXP - nextLevel;
+                int tempDiff = (int)playerXP - nextLevel;
                 currentCombo += tempDiff;
                 if (highestCombo < currentCombo)
                 {
                     highestCombo = currentCombo;
                 }
                 playerXP = nextLevel;
-                //Debug.Log("highest combo " + highestCombo);
-                //Debug.Log("current combo " + currentCombo);
             }
         }
 
@@ -129,7 +132,7 @@ public class StageStatsScript: MonoBehaviour {
         if (respawning)
         {
             levelValue = 1;
-            nextLevel = 80;
+            nextLevel = baseXPReq;
             playerXP = 0;
             currentCombo = 0;
             respawnCooldown-=Time.deltaTime;
