@@ -9,7 +9,7 @@ public class PlayerMovementScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        Screen.showCursor = false;
+        //Screen.showCursor = false;
         Screen.lockCursor = true;
 	}
 	
@@ -21,7 +21,7 @@ public class PlayerMovementScript : MonoBehaviour {
 
     void moveController()
     {
-        Screen.showCursor = false;
+        //Screen.showCursor = false;
         Screen.lockCursor = true;
 
 

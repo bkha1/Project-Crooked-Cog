@@ -49,6 +49,7 @@
      <Compile Include="Assets\Scripts\EnemyChopperScript.cs" />
      <Compile Include="Assets\Scripts\EnemyRaiderScript.cs" />
      <Compile Include="Assets\Scripts\EnemySpawnScript.cs" />
+     <Compile Include="Assets\Scripts\GameOverScript.cs" />
      <Compile Include="Assets\Scripts\HealthScript.cs" />
      <Compile Include="Assets\Scripts\MoveScript.cs" />
      <Compile Include="Assets\Scripts\PlayerMovementScript.cs" />

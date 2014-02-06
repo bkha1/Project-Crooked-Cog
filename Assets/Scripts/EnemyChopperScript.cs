@@ -51,6 +51,8 @@ public class EnemyChopperScript : MonoBehaviour {
         move.direction = 270;
 
         hpThreshold = 50;
+
+        StageStatsScript.Instance.goalsLeft++;
     }
 
     // Update is called once per frame
@@ -202,6 +204,8 @@ public class EnemyChopperScript : MonoBehaviour {
         {
             Vector3 explosionPosition = transform.position;
             SpecialEffectsScript.Instance.playExplosionPrefab(explosionPosition, new Vector2(1, 1));
+            //StageStatsScript.Instance.goalsAchieved++;
+            StageStatsScript.Instance.goalsLeft--;
 
             for (int i = 0; i < 10; i++)
             {
@@ -216,6 +220,10 @@ public class EnemyChopperScript : MonoBehaviour {
 
     private bool appQuit = false;
     void OnApplicationQuit()
+    {
+        appQuit = true;
+    }
+    void OnLevelWasLoaded()
     {
         appQuit = true;
     }

@@ -33,6 +33,11 @@ public class StageStatsScript: MonoBehaviour {
 
     private bool pauseTimer;
 
+    //public int parGoals = 3;
+    //public int goalsAchieved = 0;
+    private bool goalCheck = true;
+    public int goalsLeft = 0;
+
     void Awake()
     {
         if (Instance != null)
@@ -143,6 +148,22 @@ public class StageStatsScript: MonoBehaviour {
                 StartCoroutine(respawnPlayer(Instantiate(player) as Transform));
             }
         }
+        /*
+        if (goalsAchieved < 0)//if by some freak accident this happens; fix it
+        {
+            goalsAchieved = 0;
+        }
+
+        if(parGoals<=goalsAchieved)//PAR GOALS ACHIEVED
+        {
+
+        }*/
+
+        if (goalsLeft <= 0 && goalCheck)
+        {
+            
+            goalCheck = false;
+        }
 	}
 
     public void increaseXP(int i)
@@ -218,6 +239,9 @@ public class StageStatsScript: MonoBehaviour {
             pauseTimer = true;
             playerLives = 0;
             //GAME OVER
+            //transform.parent.gameObject.AddComponent<GameOverScript>();
+            transform.gameObject.AddComponent<GameOverScript>();
+            Screen.lockCursor = false;
         }
     }
 

@@ -30,6 +30,7 @@ public class EnemyRaiderScript : MonoBehaviour {
         aiCooldown = maxAttackCooldown;
         isAttacking = false;
         reviveCooldown = 10;
+        StageStatsScript.Instance.goalsLeft++;
 	}
 	
 	// Update is called once per frame
@@ -65,6 +66,8 @@ public class EnemyRaiderScript : MonoBehaviour {
                     chopperTransform.parent = transform.parent;
                     chopperTransform.position = new Vector3(3.5f, 2.5f, 0);*/
                     EnemySpawnScript.Instance.spawnEnemyChopper(new Vector3(3.5f, 2.5f, 0));
+
+                    //StageStatsScript.Instance.goalsAchieved--;
                 }
                 checkSide = false;
             }
@@ -93,6 +96,8 @@ public class EnemyRaiderScript : MonoBehaviour {
                     chopperTransform.parent = transform.parent;
                     chopperTransform.position = new Vector3(-3.5f, 2.5f, 0);*/
                     EnemySpawnScript.Instance.spawnEnemyChopper(new Vector3(-3.5f,2.5f,0));
+
+                    //StageStatsScript.Instance.goalsAchieved--;
                 }
                 checkSide = false;
             }
@@ -180,6 +185,8 @@ public class EnemyRaiderScript : MonoBehaviour {
         {
             Vector3 explosionPosition = transform.position;
             SpecialEffectsScript.Instance.playExplosionPrefab(explosionPosition, new Vector2(2,2));
+            //StageStatsScript.Instance.goalsAchieved++;
+            StageStatsScript.Instance.goalsLeft--;
 
             for (int i = 0; i < 30; i++)
             {
@@ -194,6 +201,11 @@ public class EnemyRaiderScript : MonoBehaviour {
 
     private bool appQuit = false;
     void OnApplicationQuit()
+    {
+        appQuit = true;
+    }
+
+    void OnLevelWasLoaded()
     {
         appQuit = true;
     }

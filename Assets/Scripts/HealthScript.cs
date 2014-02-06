@@ -142,6 +142,7 @@ public class HealthScript : MonoBehaviour
             SoundEffectsScript.Instance.playExplosionSound1(.5f);
             // Dead!
             Destroy(gameObject);
+            //TODO: CHANGE THIS TO NOT JUST DESTROY THE GAMEOBJECT
         }
     }
 }
