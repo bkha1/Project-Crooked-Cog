@@ -2,9 +2,26 @@
 using System.Collections;
 
 public class GameOverScript : MonoBehaviour {
+    //private GUIStyle myStyle;
+
+    void Awake()
+    {
+        //myStyle.normal.textColor = Color.black;
+        //myStyle.fontSize = 10;
+        Screen.lockCursor = false;
+    }
 
     void OnGUI()
     {
+        GUI.contentColor = Color.black;
+ 
+        if (StageStatsScript.Instance.goalsLeft <= 0)
+        {
+            GUI.Label(new Rect(10, 10, 100, 20), "Offense: "+ StageStatsScript.Instance.offenseRank);
+            GUI.Label(new Rect(10, 25, 100, 20), "Defense: "+ StageStatsScript.Instance.defenseRank);
+            GUI.Label(new Rect(10, 40, 100, 20), "Speed: "+ StageStatsScript.Instance.speedRank);
+        }
+
         const int buttonWidth = 120;
         const int buttonHeight = 60;
 

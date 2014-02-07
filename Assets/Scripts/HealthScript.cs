@@ -7,6 +7,7 @@ public class HealthScript : MonoBehaviour
     public bool isEnemy = true;
     public bool isInvincible = false;
     public int enemyDamage = 1;//how much the enemy hurts if the player touches him
+    public bool isDead = false;
 
     //private SpriteRenderer renderer;
     private SpriteRenderer[] renderers;
@@ -67,7 +68,7 @@ public class HealthScript : MonoBehaviour
                 // otherwise you will just remove the script.
                 Destroy(shot.gameObject);
                 
-                if (!isInvincible)
+                if (!isInvincible && !isDead)
                 {
                     hp -= shot.damage;
 
@@ -83,10 +84,13 @@ public class HealthScript : MonoBehaviour
                         }
 
                         //combotext popups!
-                        if (StageStatsScript.Instance.currentCombo > 0 && StageStatsScript.Instance.playerXP >= StageStatsScript.Instance.nextLevel)
+                        if (isEnemy)
                         {
-                            SoundEffectsScript.Instance.playComboSound1(1f);
-                            SpecialEffectsScript.Instance.playComboTextPrefab(new Vector3(shot.gameObject.transform.position.x, shot.gameObject.transform.position.y, -5), new Vector2(1, 1));
+                            if (StageStatsScript.Instance.currentCombo > 0 && StageStatsScript.Instance.playerXP >= StageStatsScript.Instance.nextLevel)
+                            {
+                                SoundEffectsScript.Instance.playComboSound1(1f);
+                                SpecialEffectsScript.Instance.playComboTextPrefab(new Vector3(shot.gameObject.transform.position.x, shot.gameObject.transform.position.y, -5), new Vector2(1, 1));
+                            }
                         }
                     }
 
@@ -100,10 +104,10 @@ public class HealthScript : MonoBehaviour
 
         if (hp <= 0)
         {
-            //SpecialEffectsHelper.Instance.Explosion(transform.position);
-            SoundEffectsScript.Instance.playExplosionSound1(.5f);
+            //SoundEffectsScript.Instance.playExplosionSound1(.5f);
             // Dead!
-            Destroy(gameObject);
+            //Destroy(gameObject);
+            isDead = true;
         }
     }
 
@@ -114,7 +118,7 @@ public class HealthScript : MonoBehaviour
             HealthScript enemy = collider.gameObject.GetComponent<HealthScript>();
             if (enemy != null)
             {
-                if (enemy.isEnemy)
+                if (enemy.isEnemy && !enemy.isDead)
                 {
                     if (!isInvincible)
                     {
@@ -138,11 +142,11 @@ public class HealthScript : MonoBehaviour
 
         if (hp <= 0)
         {
-            //SpecialEffectsHelper.Instance.Explosion(transform.position);
-            SoundEffectsScript.Instance.playExplosionSound1(.5f);
+            //SoundEffectsScript.Instance.playExplosionSound1(.5f);
             // Dead!
-            Destroy(gameObject);
+            //Destroy(gameObject);
             //TODO: CHANGE THIS TO NOT JUST DESTROY THE GAMEOBJECT
+            isDead = true;
         }
     }
 }

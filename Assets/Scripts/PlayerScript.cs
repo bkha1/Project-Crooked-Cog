@@ -9,6 +9,7 @@ public class PlayerScript : MonoBehaviour {
     private Vector3 playerpos;
     private Vector3 oldplayerpos;
     private PlayerMovementScript playerMovementScript;
+    private HealthScript health;
 
     private bool appQuit = false;
 
@@ -17,6 +18,7 @@ public class PlayerScript : MonoBehaviour {
         weapons = GetComponentsInChildren<WeaponScript>();
         animator = GetComponent<Animator>();
         playerMovementScript = GetComponent<PlayerMovementScript>();
+        health = GetComponent<HealthScript>();
     }
 
     // Use this for initialization
@@ -70,7 +72,17 @@ public class PlayerScript : MonoBehaviour {
                 weapon.Attack(false);
             }
         }
-        // End of the update method
+        
+        //health check
+        if (health.isDead)
+        {
+            SoundEffectsScript.Instance.playExplosionSound1(.5f);
+            SpecialEffectsScript.Instance.playExplosionPrefab(transform.position, new Vector2(1, 1));
+            //StageStatsScript.Instance.numOfDeaths++;
+
+            StageStatsScript.Instance.respawn();
+            Destroy(gameObject);
+        }
     }
 
     void OnTriggerEnter2D(Collider2D otherCollider2D)
@@ -103,10 +115,11 @@ public class PlayerScript : MonoBehaviour {
         //transform.parent.gameObject.AddComponent<GameOverScript>();
         if (!appQuit)
         {
+            /*
             SpecialEffectsScript.Instance.playExplosionPrefab(transform.position, new Vector2(1, 1));
             StageStatsScript.Instance.numOfDeaths++;
 
-            StageStatsScript.Instance.respawn();
+            StageStatsScript.Instance.respawn();*/
         }
     }
     

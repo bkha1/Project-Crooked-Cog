@@ -5,6 +5,7 @@ public class EnemyRaiderScript : MonoBehaviour {
 
     private WeaponScript[] weapons;
     private SpriteRenderer sprite;
+    private HealthScript health;
 
     public float minAttackCooldown = 3f;
     public float maxAttackCooldown = 5f;
@@ -18,11 +19,14 @@ public class EnemyRaiderScript : MonoBehaviour {
     //for reviving support choppers
     private float reviveCooldown = 10;
     //public Transform chopperPrefab;
+    private float deathTimer = 0;
+    private float explosionCooldown = 1;
 
     void Awake()
     {
         weapons = GetComponentsInChildren<WeaponScript>();
         sprite = GetComponentInChildren<SpriteRenderer>();
+        health = GetComponent<HealthScript>();
     }
 
 	// Use this for initialization
@@ -35,137 +39,162 @@ public class EnemyRaiderScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        reviveCooldown -= Time.deltaTime;
-        if (reviveCooldown <= 0f)
+        //healthcheck
+        if (!health.isDead)
         {
-            bool checkSide = false;
-            EnemyChopperScript[] tempObjects;
-            tempObjects = GameObject.FindObjectsOfType<EnemyChopperScript>();
-            if (Random.Range(0, 2) == 0)//right side
+            reviveCooldown -= Time.deltaTime;
+            if (reviveCooldown <= 0f)
             {
-                if (tempObjects != null)
+                bool checkSide = false;
+                EnemyChopperScript[] tempObjects;
+                tempObjects = GameObject.FindObjectsOfType<EnemyChopperScript>();
+                if (Random.Range(0, 2) == 0)//right side
                 {
-                    foreach (EnemyChopperScript chopper in tempObjects)
+                    if (tempObjects != null)
                     {
-                        if (chopper.gameObject.transform.position.x > transform.position.x)
+                        foreach (EnemyChopperScript chopper in tempObjects)
                         {
-                            checkSide = true;
-                            break;
+                            if (chopper.gameObject.transform.position.x > transform.position.x)
+                            {
+                                checkSide = true;
+                                break;
+                            }
                         }
                     }
+                    else
+                    {
+                        checkSide = false;
+                    }
+
+                    if (checkSide == false)
+                    {
+                        //spawn chopper
+                        /*var chopperTransform = Instantiate(chopperPrefab) as Transform;
+                        chopperTransform.parent = transform.parent;
+                        chopperTransform.position = new Vector3(3.5f, 2.5f, 0);*/
+                        EnemySpawnScript.Instance.spawnEnemyChopper(new Vector3(3.5f, 2.5f, 0));
+
+                        //StageStatsScript.Instance.goalsAchieved--;
+                    }
+                    checkSide = false;
                 }
-                else
+                else//left side
                 {
+                    if (tempObjects != null)
+                    {
+                        foreach (EnemyChopperScript chopper in tempObjects)
+                        {
+                            if (chopper.gameObject.transform.position.x < transform.position.x)
+                            {
+                                checkSide = true;
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        checkSide = false;
+                    }
+
+                    if (checkSide == false)
+                    {
+                        //spawn chopper
+                        /*var chopperTransform = Instantiate(chopperPrefab) as Transform;
+                        chopperTransform.parent = transform.parent;
+                        chopperTransform.position = new Vector3(-3.5f, 2.5f, 0);*/
+                        EnemySpawnScript.Instance.spawnEnemyChopper(new Vector3(-3.5f, 2.5f, 0));
+
+                        //StageStatsScript.Instance.goalsAchieved--;
+                    }
                     checkSide = false;
                 }
 
-                if (checkSide == false)
-                {
-                    //spawn chopper
-                    /*var chopperTransform = Instantiate(chopperPrefab) as Transform;
-                    chopperTransform.parent = transform.parent;
-                    chopperTransform.position = new Vector3(3.5f, 2.5f, 0);*/
-                    EnemySpawnScript.Instance.spawnEnemyChopper(new Vector3(3.5f, 2.5f, 0));
-
-                    //StageStatsScript.Instance.goalsAchieved--;
-                }
                 checkSide = false;
+                reviveCooldown = 10;
             }
-            else//left side
+
+            aiCooldown -= Time.deltaTime;
+
+            if (aiCooldown <= 0f)
             {
-                if (tempObjects != null)
+                isAttacking = !isAttacking;
+                aiCooldown = Random.Range(minAttackCooldown, maxAttackCooldown);
+                if (isAttacking)
                 {
-                    foreach (EnemyChopperScript chopper in tempObjects)
-                    {
-                        if (chopper.gameObject.transform.position.x < transform.position.x)
-                        {
-                            checkSide = true;
-                            break;
-                        }
-                    }
+                    aiCooldown += 3;
+                    warningCooldown = 3;
                 }
-                else
-                {
-                    checkSide = false;
-                }
-
-                if (checkSide == false)
-                {
-                    //spawn chopper
-                    /*var chopperTransform = Instantiate(chopperPrefab) as Transform;
-                    chopperTransform.parent = transform.parent;
-                    chopperTransform.position = new Vector3(-3.5f, 2.5f, 0);*/
-                    EnemySpawnScript.Instance.spawnEnemyChopper(new Vector3(-3.5f,2.5f,0));
-
-                    //StageStatsScript.Instance.goalsAchieved--;
-                }
-                checkSide = false;
             }
 
-            checkSide = false;
-            reviveCooldown = 10;
-        }
-
-        aiCooldown -= Time.deltaTime;
-
-        if (aiCooldown <= 0f)
-        {
-            isAttacking = !isAttacking;
-            aiCooldown = Random.Range(minAttackCooldown, maxAttackCooldown);
             if (isAttacking)
             {
-                aiCooldown += 3;
-                warningCooldown = 3;
+                warningCooldown -= Time.deltaTime;
+
+                //SoundEffectsScript.Instance.playEnemyShootSound1(.75f);
+                if (warningCooldown <= 0)
+                {
+                    if (sprite != null)
+                    {
+                        sprite.color = Color.white;
+                    }
+                    foreach (WeaponScript weapon in weapons)
+                    {
+                        if (weapon != null)
+                        {
+                            if (weapon.CanAttack())
+                            {
+                                SoundEffectsScript.Instance.playEnemyShootSound1(.75f);
+                            }
+                            //SoundEffectsScript.Instance.playEnemyShootSound1(.75f);
+                            weapon.Attack(true, 0, 3, 2.5f);
+                        }
+                    }
+                }
+                else
+                {
+                    if (sprite != null)
+                    {
+                        flashingCooldown -= Time.deltaTime;
+                        if (flashingCooldown <= 0)
+                        {
+                            if (flashingRed)
+                            {
+                                sprite.color = Color.red;
+                            }
+                            else
+                            {
+                                sprite.color = Color.white;
+                            }
+                            flashingCooldown = .25f;
+                            flashingRed = !flashingRed;
+                        }
+                    }
+                }
             }
         }
-
-        if (isAttacking)
+        else
         {
-            warningCooldown -= Time.deltaTime;
+            deathTimer += Time.deltaTime;
+            explosionCooldown += Time.deltaTime;
 
-            //SoundEffectsScript.Instance.playEnemyShootSound1(.75f);
-            if (warningCooldown <= 0)
+            if (explosionCooldown > .05)
             {
-                if (sprite != null)
-                {
-                    sprite.color = Color.white;
-                }
-                foreach (WeaponScript weapon in weapons)
-                {
-                    if (weapon != null)
-                    {
-                        if (weapon.CanAttack())
-                        {
-                            SoundEffectsScript.Instance.playEnemyShootSound1(.75f);
-                        }
-                        //SoundEffectsScript.Instance.playEnemyShootSound1(.75f);
-                        weapon.Attack(true, 0, 3, 2.5f);
-                    }
-                }
+                Vector3 explosionPosition = transform.position;
+                explosionPosition.x += Random.Range(-2f, 2f);
+                explosionPosition.y += Random.Range(-2f, 2f);
+                SoundEffectsScript.Instance.playExplosionSound2(.5f);
+                SpecialEffectsScript.Instance.playExplosionPrefab(explosionPosition, new Vector2(1.5f, 1.5f));
+                explosionCooldown = 0;
             }
-            else
+
+            if (deathTimer >= 3)
             {
-                if (sprite != null)
-                {
-                    flashingCooldown -= Time.deltaTime;
-                    if (flashingCooldown <= 0)
-                    {
-                        if (flashingRed)
-                        {
-                            sprite.color = Color.red;
-                        }
-                        else
-                        {
-                            sprite.color = Color.white;
-                        }
-                        flashingCooldown = .25f;
-                        flashingRed = !flashingRed;
-                    }
-                }
+                StageStatsScript.Instance.goalsLeft--;
+                Destroy(gameObject);
             }
         }
-	
 	}
+    
 
     void OnTriggerEnter2D(Collider2D otherCollider2D)
     {
@@ -177,36 +206,5 @@ public class EnemyRaiderScript : MonoBehaviour {
                 SoundEffectsScript.Instance.playHitSound1(.5f);
             }
         }
-    }
-
-    void OnDestroy()
-    {
-        if (!appQuit)
-        {
-            Vector3 explosionPosition = transform.position;
-            SpecialEffectsScript.Instance.playExplosionPrefab(explosionPosition, new Vector2(2,2));
-            //StageStatsScript.Instance.goalsAchieved++;
-            StageStatsScript.Instance.goalsLeft--;
-
-            for (int i = 0; i < 30; i++)
-            {
-                explosionPosition.x += Random.Range(-2f, 2f);
-                explosionPosition.y += Random.Range(-2f, 2f);
-                SpecialEffectsScript.Instance.playExplosionPrefab(explosionPosition, new Vector2(2, 2));
-                explosionPosition = transform.position;
-            }
-            //SpecialEffectsScript.Instance.playExplosionPrefab(transform.position);
-        }
-    }
-
-    private bool appQuit = false;
-    void OnApplicationQuit()
-    {
-        appQuit = true;
-    }
-
-    void OnLevelWasLoaded()
-    {
-        appQuit = true;
     }
 }

@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class StageStatsScript: MonoBehaviour {
+public class StageStatsScript : MonoBehaviour
+{
 
     public static StageStatsScript Instance;
 
@@ -12,6 +13,10 @@ public class StageStatsScript: MonoBehaviour {
     public int highestCombo;
     public float stageTime;
     public int numOfDeaths;
+
+    public string offenseRank;
+    public string defenseRank;
+    public string speedRank;
 
     public int currentCombo;
 
@@ -48,8 +53,9 @@ public class StageStatsScript: MonoBehaviour {
         Instance = this;
     }
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start()
+    {
         highestCombo = 0;
         stageTime = 0;
         numOfDeaths = 0;
@@ -66,10 +72,11 @@ public class StageStatsScript: MonoBehaviour {
         pauseTimer = false;
 
         respawnCooldown = respawnTime;
-	}
-	
-	// Update is called once per frame
-	void Update () {
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
 
         Rect tempMeter = upgradeMeter.pixelInset;
         tempMeter.width = ((float)playerXP / (float)nextLevel) * meterMaxWidth; ;
@@ -134,13 +141,14 @@ public class StageStatsScript: MonoBehaviour {
         livesValueText.text = "x" + playerLives.ToString();
         levelValueText.text = "Lvl:" + levelValue.ToString();
 
+        //respawning check
         if (respawning)
         {
             levelValue = 1;
             nextLevel = baseXPReq;
             playerXP = 0;
             currentCombo = 0;
-            respawnCooldown-=Time.deltaTime;
+            respawnCooldown -= Time.deltaTime;
             if (respawnCooldown <= 0)
             {
                 respawnCooldown = respawnTime;
@@ -148,27 +156,93 @@ public class StageStatsScript: MonoBehaviour {
                 StartCoroutine(respawnPlayer(Instantiate(player) as Transform));
             }
         }
-        /*
-        if (goalsAchieved < 0)//if by some freak accident this happens; fix it
-        {
-            goalsAchieved = 0;
-        }
-
-        if(parGoals<=goalsAchieved)//PAR GOALS ACHIEVED
-        {
-
-        }*/
 
         if (goalsLeft <= 0 && goalCheck)
         {
-            
+            //calculate ranks
+            //calculate combo ratio
+            float tempRank = (float)highestCombo / (float)parCombo;
+            if (tempRank >= 1)
+            {
+                offenseRank = "S";
+            }
+            else if (tempRank >= .9)
+            {
+                offenseRank = "A";
+            }
+            else if (tempRank >= .8)
+            {
+                offenseRank = "B";
+            }
+            else if (tempRank >= .7)
+            {
+                offenseRank = "C";
+            }
+            else if (tempRank >= .6)
+            {
+                offenseRank = "D";
+            }
+            else
+            {
+                offenseRank = "F";
+            }
+
+            //todo:should change this to livesused/playerlives ratio
+            //calculate death ratio
+            if (numOfDeaths <= 0)
+            {
+                defenseRank = "S";
+            }
+            else if (numOfDeaths <= 1)
+            {
+                defenseRank = "B";
+            }
+            else if (numOfDeaths <= 2)
+            {
+                defenseRank = "D";
+            }
+            else
+            {
+                defenseRank = "F";
+            }
+
+            //calculate time ratio
+            tempRank = (float)stageTime / (float)parTime;
+            if (tempRank <= 1)
+            {
+                speedRank = "S";
+            }
+            else if (tempRank <= 1.2)
+            {
+                speedRank = "A";
+            }
+            else if (tempRank <= 1.4)
+            {
+                speedRank = "B";
+            }
+            else if (tempRank <= 1.6)
+            {
+                speedRank = "C";
+            }
+            else if (tempRank <= 1.8)
+            {
+                speedRank = "D";
+            }
+            else
+            {
+                speedRank = "F";
+            }
+
+            transform.gameObject.AddComponent<GameOverScript>();
+            pauseTimer = true;
+
             goalCheck = false;
         }
-	}
+    }
 
     public void increaseXP(int i)
     {
-        playerXP+=i;
+        playerXP += i;
     }
 
     public void wipeXP()
@@ -183,7 +257,7 @@ public class StageStatsScript: MonoBehaviour {
 
     public Transform player;
     private float respawnCooldown;
-    public float respawnTime = 1;
+    private float respawnTime = 1;
     private bool respawning = false;
     IEnumerator respawnPlayer(Transform playerObject)
     {
@@ -227,10 +301,10 @@ public class StageStatsScript: MonoBehaviour {
 
     public void respawn()
     {
-        //playerLives--;
-
+        //todo: get rid of all bullets in the scene upon respawn
         if (playerLives > 0)
         {
+            numOfDeaths++;
             playerLives--;
             respawning = true;
         }
@@ -240,18 +314,83 @@ public class StageStatsScript: MonoBehaviour {
             playerLives = 0;
             //GAME OVER
             //transform.parent.gameObject.AddComponent<GameOverScript>();
-            transform.gameObject.AddComponent<GameOverScript>();
-            Screen.lockCursor = false;
-        }
-    }
 
-    
-    void OnGUI()
-    {
-        //GUI.Box(new Rect(Screen.width * .15f, Screen.height * .96f, Screen.width / 4 , 20), "100"+ "/" +"100");
-        //GUI.DrawTexture(new Rect(Screen.width * .15f, Screen.height * .96f, Screen.width / 4, 20), true, 1);// "100" + "/" + "100");
-        //GUI.DrawTexture(new Rect(10, 10, 60, 60), aTexture, ScaleMode.ScaleToFit, true, 10.0F);
-        //GUI.DrawTexture(new Rect(Screen.width * .15f, Screen.height * .96f, Screen.width / 4, 20), barBackTexture); //ScaleMode.ScaleToFit, true, 10.0F);
-        //GUI.DrawTexture(new Rect(Screen.width * .15f, Screen.height * .96f, (Screen.width / 4) , 5), barFrontTexture); //ScaleMode.ScaleToFit, true, 10.0F);
+            //calculate ranks
+            //calculate combo ratio
+            float tempRank = (float)highestCombo / (float)parCombo;
+            if (tempRank >= 1)
+            {
+                offenseRank = "S";
+            }
+            else if (tempRank >= .9)
+            {
+                offenseRank = "A";
+            }
+            else if (tempRank >= .8)
+            {
+                offenseRank = "B";
+            }
+            else if (tempRank >= .7)
+            {
+                offenseRank = "C";
+            }
+            else if (tempRank >= .6)
+            {
+                offenseRank = "D";
+            }
+            else
+            {
+                offenseRank = "F";
+            }
+
+            //todo:should change this to livesused/playerlives ratio
+            //calculate death ratio
+            if (numOfDeaths <= 0)
+            {
+                defenseRank = "S";
+            }
+            else if (numOfDeaths <= 1)
+            {
+                defenseRank = "B";
+            }
+            else if (numOfDeaths <= 2)
+            {
+                defenseRank = "D";
+            }
+            else
+            {
+                defenseRank = "F";
+            }
+
+            //calculate time ratio
+            tempRank = (float)stageTime / (float)parTime;
+            if (tempRank <= 1)
+            {
+                speedRank = "S";
+            }
+            else if (tempRank <= 1.2)
+            {
+                speedRank = "A";
+            }
+            else if (tempRank <= 1.4)
+            {
+                speedRank = "B";
+            }
+            else if (tempRank <= 1.6)
+            {
+                speedRank = "C";
+            }
+            else if (tempRank <= 1.8)
+            {
+                speedRank = "D";
+            }
+            else
+            {
+                speedRank = "F";
+            }
+
+            transform.gameObject.AddComponent<GameOverScript>();
+            //Screen.lockCursor = false;
+        }
     }
 }

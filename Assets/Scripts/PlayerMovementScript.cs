@@ -22,13 +22,17 @@ public class PlayerMovementScript : MonoBehaviour {
     void moveController()
     {
         //Screen.showCursor = false;
-        Screen.lockCursor = true;
+        if (StageStatsScript.Instance.goalsLeft > 0)
+        {
+            Screen.lockCursor = true;
 
 
-        inputX = Input.GetAxis("Mouse X");
-        inputY = Input.GetAxis("Mouse Y");
-        movement = new Vector2(inputX, inputY);
-        transform.position += (Vector3)movement;
+
+            inputX = Input.GetAxis("Mouse X");
+            inputY = Input.GetAxis("Mouse Y");
+            movement = new Vector2(inputX, inputY);
+            transform.position += (Vector3)movement;
+        }
 
         /*
         if (inputX > 0)
