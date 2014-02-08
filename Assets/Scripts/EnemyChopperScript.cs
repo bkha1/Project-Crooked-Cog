@@ -151,7 +151,7 @@ public class EnemyChopperScript : MonoBehaviour {
                                 //hatchAngle = Mathf.Rad2Deg * Mathf.Atan((tempPlayer.transform.position.y - transform.position.y)/((tempPlayer.transform.position.x - transform.position.x)));
                                 hatchAngle = Vector3.Angle(Vector3.right, tempPlayer.transform.position - transform.position) * -1;
                                 //Debug.Log(hatchAngle);
-                                hatchAngle += Random.Range(-15, 16);
+                                hatchAngle += Random.Range(-10, 11);
                             }
                             else
                             {

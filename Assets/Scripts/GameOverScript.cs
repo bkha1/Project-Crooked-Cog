@@ -17,9 +17,89 @@ public class GameOverScript : MonoBehaviour {
  
         if (StageStatsScript.Instance.goalsLeft <= 0)
         {
-            GUI.Label(new Rect(10, 10, 100, 20), "Offense: "+ StageStatsScript.Instance.offenseRank);
-            GUI.Label(new Rect(10, 25, 100, 20), "Defense: "+ StageStatsScript.Instance.defenseRank);
-            GUI.Label(new Rect(10, 40, 100, 20), "Speed: "+ StageStatsScript.Instance.speedRank);
+            string tempOffenseRank;
+            string tempDefenseRank;
+            string tempSpeedRank;
+            //offense
+            if (StageStatsScript.Instance.offenseRank == 6)
+            {
+                tempOffenseRank = "S";
+            }
+            else if (StageStatsScript.Instance.offenseRank == 5)
+            {
+                tempOffenseRank = "A";
+            }
+            else if (StageStatsScript.Instance.offenseRank == 4)
+            {
+                tempOffenseRank = "B";
+            }
+            else if (StageStatsScript.Instance.offenseRank == 3)
+            {
+                tempOffenseRank = "C";
+            }
+            else if (StageStatsScript.Instance.offenseRank == 2)
+            {
+                tempOffenseRank = "D";
+            }
+            else
+            {
+                tempOffenseRank = "F";
+            }
+            //defense
+            if (StageStatsScript.Instance.defenseRank == 6)
+            {
+                tempDefenseRank = "S";
+            }
+            else if (StageStatsScript.Instance.defenseRank == 5)
+            {
+                tempDefenseRank = "A";
+            }
+            else if (StageStatsScript.Instance.defenseRank == 4)
+            {
+                tempDefenseRank = "B";
+            }
+            else if (StageStatsScript.Instance.defenseRank == 3)
+            {
+                tempDefenseRank = "C";
+            }
+            else if (StageStatsScript.Instance.defenseRank == 2)
+            {
+                tempDefenseRank = "D";
+            }
+            else
+            {
+                tempDefenseRank = "F";
+            }
+            //speed
+            if (StageStatsScript.Instance.speedRank == 6)
+            {
+                tempSpeedRank = "S";
+            }
+            else if (StageStatsScript.Instance.speedRank == 5)
+            {
+                tempSpeedRank = "A";
+            }
+            else if (StageStatsScript.Instance.speedRank == 4)
+            {
+                tempSpeedRank = "B";
+            }
+            else if (StageStatsScript.Instance.speedRank == 3)
+            {
+                tempSpeedRank = "C";
+            }
+            else if (StageStatsScript.Instance.speedRank == 2)
+            {
+                tempSpeedRank = "D";
+            }
+            else
+            {
+                tempSpeedRank = "F";
+            }
+
+            GUI.Label(new Rect(10, 10, 100, 20), "Offense: "+ tempOffenseRank);
+            GUI.Label(new Rect(10, 25, 100, 20), "Defense: " + tempDefenseRank);
+            GUI.Label(new Rect(10, 40, 100, 20), "Speed: " + tempSpeedRank);
+            GUI.Label(new Rect(10, 55, 300, 20), "Score: " + StageStatsScript.Instance.totalCombo * StageStatsScript.Instance.offenseRank * StageStatsScript.Instance.defenseRank * StageStatsScript.Instance.speedRank);//Combo Bonus = cumulative combo points * offenserank * defenserank * speedrank
         }
 
         const int buttonWidth = 120;

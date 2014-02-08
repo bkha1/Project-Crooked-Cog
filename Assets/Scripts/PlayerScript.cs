@@ -61,15 +61,18 @@ public class PlayerScript : MonoBehaviour {
             }
         }*/
 
-        foreach (WeaponScript weapon in weapons)
+        if (StageStatsScript.Instance.goalsLeft > 0)
         {
-            if(StageStatsScript.Instance.levelValue>weapon.weaponID)
+            foreach (WeaponScript weapon in weapons)
             {
-                if (weapon.CanAttack())
+                if (StageStatsScript.Instance.levelValue > weapon.weaponID)
                 {
-                    SoundEffectsScript.Instance.playPlayerShootSound1(.25f);
+                    if (weapon.CanAttack())
+                    {
+                        SoundEffectsScript.Instance.playPlayerShootSound1(.25f);
+                    }
+                    weapon.Attack(false);
                 }
-                weapon.Attack(false);
             }
         }
         
@@ -79,7 +82,6 @@ public class PlayerScript : MonoBehaviour {
             SoundEffectsScript.Instance.playExplosionSound1(.5f);
             SpecialEffectsScript.Instance.playExplosionPrefab(transform.position, new Vector2(1, 1));
             //StageStatsScript.Instance.numOfDeaths++;
-
             StageStatsScript.Instance.respawn();
             Destroy(gameObject);
         }

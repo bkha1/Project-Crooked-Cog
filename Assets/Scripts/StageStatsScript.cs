@@ -13,10 +13,11 @@ public class StageStatsScript : MonoBehaviour
     public int highestCombo;
     public float stageTime;
     public int numOfDeaths;
+    public int totalCombo;
 
-    public string offenseRank;
-    public string defenseRank;
-    public string speedRank;
+    public int offenseRank;
+    public int defenseRank;
+    public int speedRank;
 
     public int currentCombo;
 
@@ -63,6 +64,7 @@ public class StageStatsScript : MonoBehaviour
         currentCombo = 0;
         playerXP = 0;
         perSecond = 0;
+        totalCombo = 0;
 
         nextLevel = baseXPReq;
 
@@ -128,6 +130,7 @@ public class StageStatsScript : MonoBehaviour
             else
             {
                 int tempDiff = (int)playerXP - nextLevel;
+                totalCombo += tempDiff;
                 currentCombo += tempDiff;
                 if (highestCombo < currentCombo)
                 {
@@ -164,73 +167,73 @@ public class StageStatsScript : MonoBehaviour
             float tempRank = (float)highestCombo / (float)parCombo;
             if (tempRank >= 1)
             {
-                offenseRank = "S";
+                offenseRank = 6;
             }
             else if (tempRank >= .9)
             {
-                offenseRank = "A";
+                offenseRank = 5;
             }
             else if (tempRank >= .8)
             {
-                offenseRank = "B";
+                offenseRank = 4;
             }
             else if (tempRank >= .7)
             {
-                offenseRank = "C";
+                offenseRank = 3;
             }
             else if (tempRank >= .6)
             {
-                offenseRank = "D";
+                offenseRank = 2;
             }
             else
             {
-                offenseRank = "F";
+                offenseRank = 1;
             }
 
             //todo:should change this to livesused/playerlives ratio
             //calculate death ratio
             if (numOfDeaths <= 0)
             {
-                defenseRank = "S";
+                defenseRank = 6;
             }
             else if (numOfDeaths <= 1)
             {
-                defenseRank = "B";
+                defenseRank = 4;
             }
             else if (numOfDeaths <= 2)
             {
-                defenseRank = "D";
+                defenseRank = 2;
             }
             else
             {
-                defenseRank = "F";
+                defenseRank = 1;
             }
 
             //calculate time ratio
             tempRank = (float)stageTime / (float)parTime;
             if (tempRank <= 1)
             {
-                speedRank = "S";
+                speedRank = 6;
             }
             else if (tempRank <= 1.2)
             {
-                speedRank = "A";
+                speedRank = 5;
             }
             else if (tempRank <= 1.4)
             {
-                speedRank = "B";
+                speedRank = 4;
             }
             else if (tempRank <= 1.6)
             {
-                speedRank = "C";
+                speedRank = 3;
             }
             else if (tempRank <= 1.8)
             {
-                speedRank = "D";
+                speedRank = 2;
             }
             else
             {
-                speedRank = "F";
+                speedRank = 1;
             }
 
             transform.gameObject.AddComponent<GameOverScript>();
@@ -314,80 +317,6 @@ public class StageStatsScript : MonoBehaviour
             playerLives = 0;
             //GAME OVER
             //transform.parent.gameObject.AddComponent<GameOverScript>();
-
-            //calculate ranks
-            //calculate combo ratio
-            float tempRank = (float)highestCombo / (float)parCombo;
-            if (tempRank >= 1)
-            {
-                offenseRank = "S";
-            }
-            else if (tempRank >= .9)
-            {
-                offenseRank = "A";
-            }
-            else if (tempRank >= .8)
-            {
-                offenseRank = "B";
-            }
-            else if (tempRank >= .7)
-            {
-                offenseRank = "C";
-            }
-            else if (tempRank >= .6)
-            {
-                offenseRank = "D";
-            }
-            else
-            {
-                offenseRank = "F";
-            }
-
-            //todo:should change this to livesused/playerlives ratio
-            //calculate death ratio
-            if (numOfDeaths <= 0)
-            {
-                defenseRank = "S";
-            }
-            else if (numOfDeaths <= 1)
-            {
-                defenseRank = "B";
-            }
-            else if (numOfDeaths <= 2)
-            {
-                defenseRank = "D";
-            }
-            else
-            {
-                defenseRank = "F";
-            }
-
-            //calculate time ratio
-            tempRank = (float)stageTime / (float)parTime;
-            if (tempRank <= 1)
-            {
-                speedRank = "S";
-            }
-            else if (tempRank <= 1.2)
-            {
-                speedRank = "A";
-            }
-            else if (tempRank <= 1.4)
-            {
-                speedRank = "B";
-            }
-            else if (tempRank <= 1.6)
-            {
-                speedRank = "C";
-            }
-            else if (tempRank <= 1.8)
-            {
-                speedRank = "D";
-            }
-            else
-            {
-                speedRank = "F";
-            }
 
             transform.gameObject.AddComponent<GameOverScript>();
             //Screen.lockCursor = false;

@@ -12,6 +12,7 @@ public class SpecialEffectsScript : MonoBehaviour {
     //public ParticleSystem fireEffect;
 
     public Transform explosionPrefab;
+    public Transform hitEffectPrefab;
     public Transform comboTextPrefab;
 
     void Awake()
@@ -44,6 +45,14 @@ public class SpecialEffectsScript : MonoBehaviour {
         explosionTransform.localScale = scale;
         
         Destroy(explosionTransform.gameObject,1f);
+    }
+
+    public void playHitEffectPrefab(Vector3 position, Vector3 scale)
+    {
+        var hitEffectTransform = Instantiate(hitEffectPrefab) as Transform;
+        hitEffectTransform.position = position;
+        hitEffectTransform.localScale = scale;
+        Destroy(hitEffectTransform.gameObject, .5f);
     }
 
     public void playComboTextPrefab(Vector3 position, Vector3 scale)

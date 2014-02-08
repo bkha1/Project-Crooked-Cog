@@ -58,10 +58,15 @@ public class HealthScript : MonoBehaviour
             // Avoid friendly fire
             if (shot.isEnemyShot != isEnemy)
             {
-
-                SpecialEffectsScript.Instance.playExplosionPrefab(shot.gameObject.transform.position, new Vector2(1, 1));
-
-                
+                //explosions happen when comboing
+                if (isEnemy && StageStatsScript.Instance.playerXP >= StageStatsScript.Instance.nextLevel && StageStatsScript.Instance.levelValue == 3)
+                {
+                    SpecialEffectsScript.Instance.playExplosionPrefab(shot.gameObject.transform.position, new Vector2(1, 1));
+                }
+                else
+                {
+                    SpecialEffectsScript.Instance.playHitEffectPrefab(shot.gameObject.transform.position, new Vector2(.5f, .5f));
+                }
 
                 // Destroy the shot
                 // Remember to always target the game object,
