@@ -16,6 +16,7 @@ public class EnemyChopperScript : MonoBehaviour {
     private int attackType = -1;
 
     float hatchAngle = 0;
+    private int hatchAssignment = 0;
 
     private float sidegunCooldown;
     private int hp;
@@ -150,17 +151,53 @@ public class EnemyChopperScript : MonoBehaviour {
                             {
                                 //hatchAngle = Mathf.Rad2Deg * Mathf.Atan((tempPlayer.transform.position.y - transform.position.y)/((tempPlayer.transform.position.x - transform.position.x)));
                                 hatchAngle = Vector3.Angle(Vector3.right, tempPlayer.transform.position - transform.position) * -1;
-                                //Debug.Log(hatchAngle);
-                                hatchAngle += Random.Range(-10, 11);
+                                //hatchAngle += Random.Range(-15, 16);
                             }
                             else
                             {
                                 hatchAngle = Random.Range(225, 316);
                             }
+
                             Vector3 temp = weapon.transform.eulerAngles;
-                            temp.z = hatchAngle;
+                            if (hatchAssignment == 0)
+                            {
+                                temp.z = hatchAngle;
+                            }
+                            else if (hatchAssignment == 1)
+                            {
+                                temp.z = hatchAngle + 10;
+                            }
+                            else if (hatchAssignment == 2)
+                            {
+                                temp.z = hatchAngle - 10;
+                            }
+                            /*if (weapon.weaponID == 2)
+                            {
+                                temp.z = hatchAngle;
+                                weapon.transform.eulerAngles = temp;
+                                weapon.Attack(true, attackType, 3);
+                            }
+                            else if (weapon.weaponID == 3)
+                            {
+                                Debug.Log("check");
+                                temp.z = hatchAngle + 15;
+                                weapon.transform.eulerAngles = temp;
+                                weapon.Attack(true, 3, 3);
+                            }
+                            else if (weapon.weaponID == 4)
+                            {
+                                Debug.Log("check2");
+                                temp.z = hatchAngle - 15;
+                                weapon.transform.eulerAngles = temp;
+                                weapon.Attack(true, 4, 3);
+                            }*/
                             weapon.transform.eulerAngles = temp;
-                            weapon.Attack(true, attackType, 4);
+                            weapon.Attack(true, attackType, 4, 2.5f);
+                            hatchAssignment++;
+                            if (hatchAssignment > 2)
+                            {
+                                hatchAssignment = 0;
+                            }
                         }
                     }
                 }
@@ -187,7 +224,7 @@ public class EnemyChopperScript : MonoBehaviour {
                 }
             }
         }
-        else
+        else//death stuff
         {
             deathTimer += Time.deltaTime;
             explosionCooldown += Time.deltaTime;

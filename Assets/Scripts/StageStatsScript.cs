@@ -13,7 +13,7 @@ public class StageStatsScript : MonoBehaviour
     public int highestCombo;
     public float stageTime;
     public int numOfDeaths;
-    public int totalCombo;
+    public int totalScore;
 
     public int offenseRank;
     public int defenseRank;
@@ -64,7 +64,7 @@ public class StageStatsScript : MonoBehaviour
         currentCombo = 0;
         playerXP = 0;
         perSecond = 0;
-        totalCombo = 0;
+        totalScore = 0;
 
         nextLevel = baseXPReq;
 
@@ -122,6 +122,19 @@ public class StageStatsScript : MonoBehaviour
         {
             if (levelValue < 3)
             {
+                //destroy all enemy bullets and convert to points
+                ShotScript[] shots = GameObject.FindObjectsOfType<ShotScript>();
+                foreach (ShotScript enemyshot in shots)
+                {
+                   if (enemyshot.isEnemyShot)
+                   {
+                       totalScore += 100;
+                       SpecialEffectsScript.Instance.playPointsGainText(enemyshot.transform.position, new Vector2(1, 1), 100);
+                       Destroy(enemyshot.gameObject);
+                   }
+                }
+                //end enemy shot purge
+
                 SoundEffectsScript.Instance.playPowerUpSound1(1);
                 levelValue++;
                 playerXP = 0;
@@ -130,7 +143,7 @@ public class StageStatsScript : MonoBehaviour
             else
             {
                 int tempDiff = (int)playerXP - nextLevel;
-                totalCombo += tempDiff;
+                totalScore += tempDiff;
                 currentCombo += tempDiff;
                 if (highestCombo < currentCombo)
                 {
@@ -162,6 +175,18 @@ public class StageStatsScript : MonoBehaviour
 
         if (goalsLeft <= 0 && goalCheck)
         {
+            //destroy all enemy bullets and convert to points
+            ShotScript[] shots = GameObject.FindObjectsOfType<ShotScript>();
+            foreach (ShotScript enemyshot in shots)
+            {
+                if (enemyshot.isEnemyShot)
+                {
+                    totalScore += 100;
+                    SpecialEffectsScript.Instance.playPointsGainText(enemyshot.transform.position, new Vector2(1, 1), 100);
+                    Destroy(enemyshot.gameObject);
+                }
+            }
+
             //calculate ranks
             //calculate combo ratio
             float tempRank = (float)highestCombo / (float)parCombo;
@@ -241,21 +266,6 @@ public class StageStatsScript : MonoBehaviour
 
             goalCheck = false;
         }
-    }
-
-    public void increaseXP(int i)
-    {
-        playerXP += i;
-    }
-
-    public void wipeXP()
-    {
-        playerXP = 0;
-    }
-
-    public void levelUp()
-    {
-        highestCombo++;
     }
 
     public Transform player;

@@ -85,6 +85,17 @@ public class SpecialEffectsScript : MonoBehaviour {
         Destroy(comboTransform.gameObject, .5f);
     }
 
+    public void playPointsGainText(Vector3 position, Vector3 scale, int points)
+    {
+        var textTransform = Instantiate(comboTextPrefab) as Transform;
+
+        textTransform.GetComponentInChildren<TextMesh>().text = "" + points;
+        textTransform.GetComponentInChildren<TextMesh>().color = Color.blue;
+        textTransform.position = position;
+        textTransform.localScale = scale;
+        Destroy(textTransform.gameObject, .5f);
+    }
+
     /// <summary>
     /// Instantiate a Particle system from prefab
     /// </summary>

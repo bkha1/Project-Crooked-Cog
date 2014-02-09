@@ -11,6 +11,11 @@ public class GameOverScript : MonoBehaviour {
         Screen.lockCursor = false;
     }
 
+    void Update()
+    {
+        Screen.lockCursor = false;
+    }
+
     void OnGUI()
     {
         GUI.contentColor = Color.black;
@@ -99,7 +104,7 @@ public class GameOverScript : MonoBehaviour {
             GUI.Label(new Rect(10, 10, 100, 20), "Offense: "+ tempOffenseRank);
             GUI.Label(new Rect(10, 25, 100, 20), "Defense: " + tempDefenseRank);
             GUI.Label(new Rect(10, 40, 100, 20), "Speed: " + tempSpeedRank);
-            GUI.Label(new Rect(10, 55, 300, 20), "Score: " + StageStatsScript.Instance.totalCombo * StageStatsScript.Instance.offenseRank * StageStatsScript.Instance.defenseRank * StageStatsScript.Instance.speedRank);//Combo Bonus = cumulative combo points * offenserank * defenserank * speedrank
+            GUI.Label(new Rect(10, 55, 300, 20), "Score: " + StageStatsScript.Instance.totalScore * StageStatsScript.Instance.offenseRank * StageStatsScript.Instance.defenseRank * StageStatsScript.Instance.speedRank);//Combo Bonus = cumulative combo points * offenserank * defenserank * speedrank
         }
 
         const int buttonWidth = 120;

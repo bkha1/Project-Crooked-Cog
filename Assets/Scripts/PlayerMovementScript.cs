@@ -16,7 +16,6 @@ public class PlayerMovementScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         moveController();
-	
 	}
 
     void moveController()
@@ -25,8 +24,6 @@ public class PlayerMovementScript : MonoBehaviour {
         if (StageStatsScript.Instance.goalsLeft > 0)
         {
             Screen.lockCursor = true;
-
-
 
             inputX = Input.GetAxis("Mouse X");
             inputY = Input.GetAxis("Mouse Y");

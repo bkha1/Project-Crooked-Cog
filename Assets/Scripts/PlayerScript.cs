@@ -60,6 +60,11 @@ public class PlayerScript : MonoBehaviour {
                 SoundEffectsHelper.Instance.MakePlayerShotSound();
             }
         }*/
+        bool activateBomb = Input.GetKeyDown(KeyCode.Space);
+        if (activateBomb)
+        {
+            playerBomb();
+        }
 
         if (StageStatsScript.Instance.goalsLeft > 0)
         {
@@ -106,6 +111,37 @@ public class PlayerScript : MonoBehaviour {
             {
                 SoundEffectsScript.Instance.playExplosionSound2(1f);
             }
+        }
+    }
+
+    private void playerBomb()
+    {
+        if (StageStatsScript.Instance.levelValue > 1)
+        {
+            //destroy all enemy bullets and convert to points
+            ShotScript[] shots = GameObject.FindObjectsOfType<ShotScript>();
+            foreach (ShotScript enemyshot in shots)
+            {
+                if (enemyshot.isEnemyShot)
+                {
+                    StageStatsScript.Instance.totalScore += 50;
+                    SpecialEffectsScript.Instance.playPointsGainText(enemyshot.transform.position, new Vector2(1, 1), 50);
+                    Destroy(enemyshot.gameObject);
+                }
+            }
+
+            HealthScript[] thealths = GameObject.FindObjectsOfType<HealthScript>();
+            foreach (HealthScript enemyhealth in thealths)
+            {
+                if (enemyhealth.isEnemy)
+                {
+                    enemyhealth.hp -= 100;
+                }
+            }
+
+            StageStatsScript.Instance.levelValue--;
+            StageStatsScript.Instance.nextLevel = (int)(StageStatsScript.Instance.nextLevel / 1.8);
+            Debug.Log(StageStatsScript.Instance.nextLevel);
         }
     }
 
