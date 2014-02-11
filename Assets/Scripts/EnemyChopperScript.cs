@@ -138,7 +138,7 @@ public class EnemyChopperScript : MonoBehaviour {
                 {
                     if (weapon != null && weapon.enabled && weapon.CanAttack(attackType))
                     {
-                        SoundEffectsScript.Instance.playEnemyShootSound1(.75f);
+                        SoundEffectsScript.Instance.playEnemyShootSound1(1);//.75f);
 
                         if (attackType == 0)//gatling
                         {
@@ -212,7 +212,7 @@ public class EnemyChopperScript : MonoBehaviour {
                     {
                         if (weapon.CanAttack(1))
                         {
-                            SoundEffectsScript.Instance.playEnemyShootSound1(.75f);
+                            SoundEffectsScript.Instance.playEnemyShootSound1(1);//.75f);
                         }
                         weapon.Attack(true, 1);
                     }
@@ -236,7 +236,7 @@ public class EnemyChopperScript : MonoBehaviour {
                 explosionPosition.x += Random.Range(-1f, 1f);
                 explosionPosition.y += Random.Range(-1f, 1f);
 
-                SoundEffectsScript.Instance.playExplosionSound2(.5f);
+                SoundEffectsScript.Instance.playExplosionSound2(1);//.5f);
                 SpecialEffectsScript.Instance.playExplosionPrefab(explosionPosition, new Vector2(1f, 1f));
                 explosionCooldown = 0;
             }
@@ -258,7 +258,7 @@ public class EnemyChopperScript : MonoBehaviour {
         {
             if (shot.isEnemyShot == false)
             {
-                SoundEffectsScript.Instance.playHitSound1(.5f);          
+                SoundEffectsScript.Instance.playHitSound1(1);//.5f);          
             }
         }
     }

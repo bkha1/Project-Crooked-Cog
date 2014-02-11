@@ -320,6 +320,18 @@ public class StageStatsScript : MonoBehaviour
             numOfDeaths++;
             playerLives--;
             respawning = true;
+
+            //destroy all enemy bullets and convert to points
+            ShotScript[] shots = GameObject.FindObjectsOfType<ShotScript>();
+            foreach (ShotScript enemyshot in shots)
+            {
+                if (enemyshot.isEnemyShot)
+                {
+                    SpecialEffectsScript.Instance.playHitEffectPrefab(enemyshot.transform.position, new Vector2(1, 1));
+                    Destroy(enemyshot.gameObject);
+                }
+            }
+            //end enemy shot purge
         }
         else
         {

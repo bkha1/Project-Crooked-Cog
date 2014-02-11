@@ -143,7 +143,7 @@ public class EnemyRaiderScript : MonoBehaviour {
                         {
                             if (weapon.CanAttack())
                             {
-                                SoundEffectsScript.Instance.playEnemyShootSound1(.75f);
+                                SoundEffectsScript.Instance.playEnemyShootSound1(1);//.75f);
                             }
                             //SoundEffectsScript.Instance.playEnemyShootSound1(.75f);
                             weapon.Attack(true, 0, 3, 2.5f);
@@ -182,7 +182,7 @@ public class EnemyRaiderScript : MonoBehaviour {
                 Vector3 explosionPosition = transform.position;
                 explosionPosition.x += Random.Range(-2f, 2f);
                 explosionPosition.y += Random.Range(-2f, 2f);
-                SoundEffectsScript.Instance.playExplosionSound2(.5f);
+                SoundEffectsScript.Instance.playExplosionSound2(1);//.5f);
                 SpecialEffectsScript.Instance.playExplosionPrefab(explosionPosition, new Vector2(1.5f, 1.5f));
                 explosionCooldown = 0;
             }
@@ -203,7 +203,7 @@ public class EnemyRaiderScript : MonoBehaviour {
         {
             if (shot.isEnemyShot == false)
             {
-                SoundEffectsScript.Instance.playHitSound1(.5f);
+                SoundEffectsScript.Instance.playHitSound1(1);//.5f);
             }
         }
     }

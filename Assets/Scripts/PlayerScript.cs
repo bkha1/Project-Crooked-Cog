@@ -74,7 +74,7 @@ public class PlayerScript : MonoBehaviour {
                 {
                     if (weapon.CanAttack())
                     {
-                        SoundEffectsScript.Instance.playPlayerShootSound1(.25f);
+                        SoundEffectsScript.Instance.playPlayerShootSound1(.5f);//.25f);
                     }
                     weapon.Attack(false);
                 }
@@ -84,7 +84,7 @@ public class PlayerScript : MonoBehaviour {
         //health check
         if (health.isDead)
         {
-            SoundEffectsScript.Instance.playExplosionSound1(.5f);
+            SoundEffectsScript.Instance.playExplosionSound1(3);//.5f);
             SpecialEffectsScript.Instance.playExplosionPrefab(transform.position, new Vector2(1, 1));
             //StageStatsScript.Instance.numOfDeaths++;
             StageStatsScript.Instance.respawn();
@@ -133,7 +133,7 @@ public class PlayerScript : MonoBehaviour {
             HealthScript[] thealths = GameObject.FindObjectsOfType<HealthScript>();
             foreach (HealthScript enemyhealth in thealths)
             {
-                if (enemyhealth.isEnemy)
+                if (enemyhealth.isEnemy && !enemyhealth.isInvincible)
                 {
                     enemyhealth.hp -= 100;
                 }
@@ -141,7 +141,7 @@ public class PlayerScript : MonoBehaviour {
 
             StageStatsScript.Instance.levelValue--;
             StageStatsScript.Instance.nextLevel = (int)(StageStatsScript.Instance.nextLevel / 1.8);
-            Debug.Log(StageStatsScript.Instance.nextLevel);
+            //Debug.Log(StageStatsScript.Instance.nextLevel);
         }
     }
 

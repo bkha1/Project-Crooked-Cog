@@ -141,7 +141,7 @@ public class GameOverScript : MonoBehaviour {
         )
         {
             // Reload the level
-            Application.LoadLevel("Menu");
+            Application.LoadLevel("DemoMenu");
         }
     }
 }

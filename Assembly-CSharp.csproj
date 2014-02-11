@@ -51,6 +51,7 @@
      <Compile Include="Assets\Scripts\EnemySpawnScript.cs" />
      <Compile Include="Assets\Scripts\GameOverScript.cs" />
      <Compile Include="Assets\Scripts\HealthScript.cs" />
+     <Compile Include="Assets\Scripts\MenuScript.cs" />
      <Compile Include="Assets\Scripts\MoveScript.cs" />
      <Compile Include="Assets\Scripts\PlayerMovementScript.cs" />
      <Compile Include="Assets\Scripts\PlayerScript.cs" />
