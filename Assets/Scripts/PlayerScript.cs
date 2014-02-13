@@ -66,15 +66,17 @@ public class PlayerScript : MonoBehaviour {
             playerBomb();
         }
 
+        bool tempfirecheck = false;//makes sure sound plays only once
         if (StageStatsScript.Instance.goalsLeft > 0)
         {
             foreach (WeaponScript weapon in weapons)
             {
                 if (StageStatsScript.Instance.levelValue > weapon.weaponID)
                 {
-                    if (weapon.CanAttack())
+                    if (weapon.CanAttack() && !tempfirecheck)
                     {
-                        SoundEffectsScript.Instance.playPlayerShootSound1(.5f);//.25f);
+                        SoundEffectsScript.Instance.playPlayerShootSound1(1f);//.25f);
+                        tempfirecheck = true;
                     }
                     weapon.Attack(false);
                 }
@@ -124,8 +126,16 @@ public class PlayerScript : MonoBehaviour {
             {
                 if (enemyshot.isEnemyShot)
                 {
-                    StageStatsScript.Instance.totalScore += 50;
-                    SpecialEffectsScript.Instance.playPointsGainText(enemyshot.transform.position, new Vector2(1, 1), 50);
+                    if (StageStatsScript.Instance.levelValue > 2)
+                    {
+                        StageStatsScript.Instance.totalScore += 100;
+                        SpecialEffectsScript.Instance.playPointsGainText(enemyshot.transform.position, new Vector2(1, 1), 100);
+                    }
+                    else
+                    {
+                        StageStatsScript.Instance.totalScore += 50;
+                        SpecialEffectsScript.Instance.playPointsGainText(enemyshot.transform.position, new Vector2(1, 1), 50);
+                    }
                     Destroy(enemyshot.gameObject);
                 }
             }
@@ -139,9 +149,10 @@ public class PlayerScript : MonoBehaviour {
                 }
             }
 
-            StageStatsScript.Instance.levelValue--;
-            StageStatsScript.Instance.nextLevel = (int)(StageStatsScript.Instance.nextLevel / 1.8);
-            //Debug.Log(StageStatsScript.Instance.nextLevel);
+            //StageStatsScript.Instance.levelValue--;
+            //StageStatsScript.Instance.nextLevel = (int)(StageStatsScript.Instance.nextLevel / 1.8);
+            StageStatsScript.Instance.levelValue = 1;
+            StageStatsScript.Instance.nextLevel = 50;
         }
     }
 
